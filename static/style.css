@@ -1,0 +1,28 @@
+:root {
+	--color: hsl(0, 0%, 90%);
+}
+
+.logo{
+	font-weight: 800;
+}
+
+@font-face {
+	font-family: 'Fira Code';
+	font-style:  normal;
+	font-weight: 400;
+	src: local('FiraCode Regular'), local('FiraCode-Regular'), url("../fonts/FiraCode-Regular.woff") format("woff");
+	font-display: swap;
+ }
+ 
+ @font-face {
+	font-family: 'Fira Code';
+	font-style:  normal;
+	font-weight: 800;
+	src: local('FiraCode Regular'), local('FiraCode-Regular'), url("../fonts/FiraCode-Bold.woff") format("woff");
+	font-display: swap;
+ }
+ 
+
+.footer .copyright {	
+	/* font-size: 1rem; */
+}

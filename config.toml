@@ -1,3 +1,45 @@
 baseURL = "https://blog.leloctai.com/"
 languageCode = "en-us"
+copyright = "All rights reserved."
+theme = "terminal"
+paginate = 10
 title = "Tai's Blog"
+subtitle = ""
+keywords = ""
+menuMore = "Show more"
+readMore = "Read more"
+readOtherPosts = "Read other posts"
+
+[author]
+	name = "Le Loc Tai"
+
+[permalinks]
+	posts = "/:year/:month/:title"
+
+[params]  
+	# dir name of your blog content (default is `content/posts`)
+	contentTypeName = "posts"
+	# ["orange", "blue", "red", "green", "pink"]
+	themeColor = "blue"
+	# if you set this to 0, only submenu trigger will be visible
+	showMenuItems = 2
+	showLanguageSelector = false
+	fullWidthTheme = false
+	centerTheme = true
+
+	# set a custom favicon (default is a `themeColor` square)
+	# favicon = "favicon.ico"
+
+	# set all headings to their default size (depending on browser settings)
+	# it's set to `true` by default
+	# oneHeadingSize = false
+
+[params.logo]
+	logoText = "Tai's Blog"
+	logoHomeLink = "/"
+
+[menu]
+[[menu.main]]
+	identifier = "about"
+	name = "About"
+	url = "/about"
