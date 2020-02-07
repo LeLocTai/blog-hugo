@@ -12,6 +12,11 @@ command = "hugo --gc --minify"
   for = "/index.xml"
     [headers.values]
     Access-Control-Allow-Origin = "*"
+    
+[[redirects]]
+  from = "/*"
+  to = "/index.html#Error404"
+  status = 404 
 
 [context.production.environment]
 HUGO_VERSION = "0.63.1"
