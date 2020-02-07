@@ -2,6 +2,17 @@
 publish = "public"
 command = "hugo --gc --minify"
 
+[[redirects]]
+  from = "https://tai-blog.netlify.com"
+  to = "https://blog.leloctai.com"
+  status = 200
+  force = true
+  
+  [[headers]]
+  for = "/index.xml"
+    [headers.values]
+    Access-Control-Allow-Origin = "*"
+
 [context.production.environment]
 HUGO_VERSION = "0.63.1"
 HUGO_ENV = "production"
