@@ -2,11 +2,7 @@
 title = 'Unity Lasso Selection'
 date = 2020-02-08
 draft = true
-cover = ""
 tags = ["Unity", "Programming"]
-keywords = []
-description = ""
-showFullContent = false
 +++
 
 {{<gfycat SparseFormalElkhound autoplay muted>}}

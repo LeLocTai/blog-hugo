@@ -1,5 +1,46 @@
 :root {
-	font-size: 14px;
+	font-size: 16px;
+}
+
+body {
+	color      : #111;
+	font-family: 'Fira Code';
+	font-size  : 1rem;
+}
+
+a {
+	color: blue;
+
+	&:visited {
+		color: rebeccapurple;
+	}
+}
+
+.site-title a {
+	color        : blue;
+	font-weight  : bold;
+	font-size    : 1.8rem;
+	border-bottom: 2px solid;
+
+	&:visited {
+		color: blue;
+	}
+
+}
+
+.color-link {
+	font-family: inherit;
+	color      : blue;
+
+	&:visited {
+		color: blue;
+	}
+}
+
+nav {
+	a {
+		color: cornflowerblue;
+	}
 }
 
 nav {
@@ -16,6 +57,8 @@ nav {
 }
 
 nav {
+	overflow: visible;
+
 	h3 {
 		margin-top   : 1.5em;
 		margin-bottom: 0.5em;
@@ -29,6 +72,15 @@ nav {
 	ul {
 		margin      : 0;
 		padding-left: 1.5em;
+	}
+
+	ol {
+		list-style-position: outside;
+	}
+
+	&>ul,
+	&>ol {
+		margin-left: -1.5em;
 	}
 }
 
@@ -49,4 +101,18 @@ nav {
 
 pre {
 	overflow: auto;
+}
+
+footer {
+	a {
+		color: #ccc;
+
+		&:visited {
+			color: #ccc;
+		}
+	}
+
+	p {
+		margin: 0;
+	}
 }
