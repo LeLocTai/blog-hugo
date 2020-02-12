@@ -1,44 +1,63 @@
 languageCode = "en-us"
 copyright = "All rights reserved."
-theme = "terminal"
+theme = "noteworthy"
 paginate = 10
 title = "Tai's Blog"
-subtitle = ""
+subtitle = "fasdfa"
 keywords = ""
-menuMore = "Show more"
-readMore = "Read more"
-readOtherPosts = "Read other posts"
-
-[author]
-	name = "Le Loc Tai"
 
 [permalinks]
 	posts = "/:year/:month/:title"
 
-[params]  
-	# dir name of your blog content (default is `content/posts`)
-	contentTypeName = "posts" 
-	# ["orange", "blue", "red", "green", "pink"]
-	themeColor = "blue"
-	# if you set this to 0, only submenu trigger will be visible
-	showMenuItems = 2
-	showLanguageSelector = false
-	fullWidthTheme = false
-	centerTheme = true
-
-	# set a custom favicon (default is a `themeColor` square)
-	# favicon = "favicon.ico"
-
-	# set all headings to their default size (depending on browser settings)
-	# it's set to `true` by default
-	# oneHeadingSize = false
-
-[params.logo]
-	logoText = "Tai's Blog"
-	logoHomeLink = "/"
-
-[menu]
+[author]
+	name = "Le Loc Tai"
+	
 [[menu.main]]
-	identifier = "about"
-	name = "About"
-	url = "/about"
+	identifier = "main-site"
+	name = "Main site"
+	url = "https://leloctai.com"
+
+[markup.goldmark.renderer]
+	unsafe = true
+
+[markup]
+	[markup.tableOfContents]
+		endLevel = 3
+		ordered = true
+		startLevel = 2
+		
+	[markup.highlight]
+		codeFences = true
+		guessSyntax = false
+		hl_Lines = ""
+		lineNoStart = 1
+		lineNos = false
+		lineNumbersInTable = true
+		noClasses = true
+		style = "monokailight"
+		tabWidth = 3
+
+googleAnalytics = "UA-83412074-6"
+
+# [params]  
+# 	# dir name of your blog content (default is `content/posts`)
+# 	contentTypeName = "posts" 
+# 	# ["orange", "blue", "red", "green", "pink"]
+# 	themeColor = "blue"
+# 	# if you set this to 0, only submenu trigger will be visible
+# 	showMenuItems = 5
+# 	showLanguageSelector = false
+# 	fullWidthTheme = false
+# 	centerTheme = true
+
+# 	# set a custom favicon (default is a `themeColor` square)
+# 	# favicon = "favicon.ico"
+
+# 	# set all headings to their default size (depending on browser settings)
+# 	# it's set to `true` by default
+# 	oneHeadingSize = false
+
+# [params.logo]
+# 	logoText = "Tai's Blog"
+# 	logoHomeLink = "/"
+
