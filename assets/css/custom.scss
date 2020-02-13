@@ -121,8 +121,38 @@ pre {
 	overflow: auto;
 
 	code {
-		font-family: Consolas, monospace;
-		font-size  : 0.9em;
+		font-size: 0.9em;
+	}
+}
+
+pre,
+code {
+	font-family: Consolas, monospace;
+	line-height: 1.4;
+}
+
+.code-block {
+	background: #fafafa;
+
+	p {
+		border-radius: 8px 0 0 8px;
+		box-shadow   : -2px 2px 4px rgba(0, 0, 0, .1);
+		background   : white;
+		margin       : 0 1.3em;
+		margin-right : 0;
+		padding      : .5em 1em;
+
+		position: relative;
+		z-index : 2;
+	}
+
+	pre {
+		margin-top   : .75em;
+		margin-bottom: -.5em;
+	}
+
+	.highlight:last-of-type pre {
+		margin-bottom: 1em;
 	}
 }
 
