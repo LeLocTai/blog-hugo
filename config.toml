@@ -3,11 +3,11 @@ copyright = "All rights reserved."
 theme = "noteworthy"
 paginate = 10
 title = "Tai's Blog"
-subtitle = "fasdfa"
+subtitle = ""
 keywords = ""
 
 [permalinks]
-	posts = "/:year/:month/:title"
+	posts = "/:slug"
 
 [author]
 	name = "Le Loc Tai"
@@ -38,6 +38,18 @@ keywords = ""
 		tabWidth = 3
 
 googleAnalytics = "UA-83412074-6"
+
+[privacy]
+  [privacy.googleAnalytics]
+    anonymizeIP = true
+    useSessionStorage = true
+  [privacy.instagram]
+    simple = true
+  [privacy.twitter]
+    enableDNT = true
+    simple = true
+  [privacy.youtube]
+    privacyEnhanced = true
 
 # [params]  
 # 	# dir name of your blog content (default is `content/posts`)
