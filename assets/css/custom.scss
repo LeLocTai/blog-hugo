@@ -4,7 +4,7 @@
 
 body {
 	color      : #111;
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: Bitter, serif;
 	font-size  : 1rem;
 }
 
@@ -18,8 +18,9 @@ a {
 
 .site-title a {
 	color        : blue;
+	font-family  : inherit;
 	font-weight  : bold;
-	font-size    : 1.8rem;
+	font-size    : 2rem;
 	border-bottom: 2px solid;
 
 	&:visited {
@@ -28,9 +29,18 @@ a {
 
 }
 
-.color-link {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
 	font-family: inherit;
+}
+
+.color-link {
 	color      : blue;
+	font-family: inherit;
 
 	&:visited {
 		color: blue;
