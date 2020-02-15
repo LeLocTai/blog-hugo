@@ -29,26 +29,6 @@ a {
 
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	font-family : inherit;
-	padding-left: 0.3em;
-	border-left : solid thick;
-}
-
-h2 {
-	font-size    : 1.6em;
-	border-bottom: solid thin black;
-}
-
-h3 {
-	font-size: 1.25em;
-}
-
 .color-link {
 	color      : blue;
 	font-family: inherit;
@@ -117,6 +97,31 @@ nav {
 	}
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: inherit;
+}
+
+h1,
+h2,
+h3 {
+	padding-left: 0.3em;
+	border-left : solid thick;
+}
+
+h2 {
+	font-size    : 1.6em;
+	border-bottom: solid thin black;
+}
+
+h3 {
+	font-size: 1.25em;
+}
+
 .post-title {
 	font-weight: bold;
 	font-size  : 1.5em;
@@ -139,10 +144,21 @@ nav {
 }
 
 
-.content-container img {
-	display  : block;
-	max-width: 100%;
-	margin   : .5em auto;
+.content-container {
+
+	img,
+	figure {
+		display  : block;
+		max-width: 100%;
+		margin   : .5em auto;
+
+		figcaption h4 {
+			font-size  : .75em;
+			font-weight: normal;
+			color      : gray;
+			margin     : 0 1em;
+		}
+	}
 }
 
 pre {
