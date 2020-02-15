@@ -35,12 +35,18 @@ h3,
 h4,
 h5,
 h6 {
-	font-family: inherit;
+	font-family : inherit;
+	padding-left: 0.3em;
+	border-left : solid thick;
 }
 
 h2 {
 	font-size    : 1.6em;
 	border-bottom: solid thin black;
+}
+
+h3 {
+	font-size: 1.25em;
 }
 
 .color-link {
