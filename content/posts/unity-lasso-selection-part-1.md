@@ -1,17 +1,24 @@
 +++
-title = 'Unity Lasso Selection tmp'
-date = 2020-02-08
+title = 'Unity Lasso Selection - Part 1: Building the foundation'
+date = 2020-02-14
 draft = true
 tags = ["Unity", "Programming"]
 videos = ["https://giant.gfycat.com/SparseFormalElkhound.mp4"]
 +++
 
-{{<gfycat SparseFormalElkhound autoplay muted loop>}}
+{{<gfycat SparseFormalElkhound controls muted loop>}}
 
 ## Introduction
 
-<!-- TODO: -->
-Note that this post is only mean to explain the interesting parts of the project, not a step by step tutorial. The full codebase is available at https://github.com/LeLocTai/unity-objects-selections.
+This first post go through the process of designing and building all the infrastructure needed for the lasso selection system in Unity Engine, including some best practice for managing dependency between Unity scripts.
+
+While this seem mundane, a good design is extremely important for any system. Well designed system lets you extend them without tearing thing apart. It's easy to test, so you have confident that your new feature doesn't break any things. It's portable, so we can pull it from one project and plug it into another, without having to carry over a bunch of unrelated stuffs, and having to do unnecessary setups.
+
+This post, of course, will not cover everything you need to know to design a good system. But I'm a firm believer in the one-step-at-a-time approach to learning. If you going to get 1 thing out of this post, it is that dependency injection is easy, stop using singleton everywhere, especially if you're making tutorial for beginner ..cough..
+
+If you're only interested in the lasso selection algorithm, it'll be in the next part. If you just want something you can use, the Github link is below.
+
+Note that this series is only mean to explain the interesting parts of the project, not a step by step tutorial, so if you just use the code here, it probably will not run. The full codebase is available at https://github.com/LeLocTai/unity-objects-selections.
 
  <!--more--> 
 
@@ -52,10 +59,12 @@ Event can be subcribe to with a delegate, which is a function-as-a-variable. In 
 
 ## Design
 
-<!-- FIXME: -->
 Our system need only 2 interfaces:
  - **Selectable** that can be selected. I defines the as a list of points/vertices. If a certain percentage of these vertices is selected then the whole thing is selected.
  - **Selector**, which when given a list of selectables, produce a subset of them that is selected.
+
+Using interfaces make it easy to swap out implementation without changing the users. So if we want to create a rectangle selection method, or if we want to make selectables from 2D Sprite, we don't have to touch anything unrelated - just implement the right interface.
+
 ### Selectable
 The actual `Selectable` is a bit more complicated:
 <div class="code-block">
@@ -136,7 +145,7 @@ A few method to build the lasso.
 		return 0;
 	}
 ```
-Finally, implement the interface with a stuff
+Finally, implement the interface to get it to compile.
 ``` csharp
 }
 ```
@@ -184,7 +193,7 @@ Set the image color to transparent if you don't want it to be visible. But the I
 ### Visualize the lasso
 At these point, we can already create the lasso with the mouse. However we have no feedback as to how it actually look. To draw the lasso, I choose the easiest way of using a Line Renderer.
 
-First, declare and initialize the necessary variables. Make sure to include the `[SerializeField]` attribute so we can assign them in the Unity Inspector. As the line render would appear on screen, we also need a reference to the camera that we're drawing from.
+Back to the UGUILassoSelector class, lets declare and initialize the necessary variables. Make sure to include the `[SerializeField]` attribute so we can assign them in the Unity Inspector. As the Line Renderer should match the cursor on screen, we also need a reference to the camera that we're drawing from.
 
 ``` csharp
 // UGUILassoSelector.cs
@@ -237,14 +246,13 @@ public void OnEndDrag(PointerEventData eventData)
 }
 ```
 
-Create a Line Renderer, tune it to your liking, assign it to the UGUILassoSelector. Now, we can see how the lasso looked like:
+Create a Line Renderer GameObject from the Unity Editor, tune it to your liking, then assign it to the UGUILassoSelector. Now, we can see how the lasso looked like:
 
 {{<gfycat TemptingMarvelousFairybluebird controls>}}
 
-
 ### Selectables
 
-Next step is that we need some thing to select. There are a few way to implement `ISelectable`. We can build the vertices from the renderer mesh, the renderer bounding box, the colliders, or just the center. I opted to take the data from the colliders, which offers a middle ground between selections accuracy and runtime complexity.
+Next, we need some thing to select. There are many way to implement `ISelectable`. We can get the vertices from the renderer mesh, the renderer bounding box, the colliders, or just the center. I opted to take the data from the colliders, which offers reasonable selections accuracy while not creating too many vertices.
 
 <div class="code-block">
 
@@ -328,13 +336,30 @@ Lets also implement the `InvalidateScreenPosition` method
 
 Now you have a script that can be attached to any GameObject with mesh or box colliders, and it would cache a list of screen space postion that can be used for selection. Here how it would look like:
 
-![](/img/unity-lasso-selection/screen-pos-from-colliders.png)
+<details>
+<summary>Code for visualizing the vertices</summary>
+
+``` csharp
+void OnGUI()
+{
+	foreach (var selectables in selectables)
+	{
+		foreach (var vertex in selectables.VerticesScreenSpace)
+		{
+				GUI.Box(new Rect(vertex.x, Screen.height - vertex.y, 1, 1), GUIContent.none);
+		}
+	}
+}
+```
+</details>
+
+{{<figure src="/img/unity-lasso-selection/screen-pos-from-colliders.png" title="Green boxes are coliders, black are the vertices we generated">}}
 
 Except it doesn't actually do anything. Yet.
 
-Aside from the fact that I didn't show the code for visualizing the vertices, which is reasonably trivial, the init method isn't getting called. Usually, you do initialization in Unity in the Start or Awake method, with one of the `Find*` methods to find needed references.
+The `Init` method haven't been called. Usually, you do initialization in Unity in the Start or Awake method, which will be called by the engine. In there you might use one of the `Find*` methods to find the needed references, the Camera in this case.
 
-So why am I not doing that here? Lets talk about ***managers***.
+So why am I not doing that here? This is an important topic, so I will write a dedicated section for it. Lets talk about ***managers***.
 
 ### Side track: managers, singleton and dependency management
 Manager classes is almost always used in game development. They are used to hold stuffs that are used by many objects (let call them ***users***), such as game settings, or in our case here, a method to convert position from 3D world space to 2D screen-space. Usually we will need many more ***managers***: game manager, players manager, enemies manager, effects manager,...
@@ -377,7 +402,7 @@ Container.Bind<ContractType>()
 
 Not to pick on any frameworks - they're there to solve specific problems - but I advises against using any if you don't know what they're solving.
 
-This is what dependency injection look like for our project:
+This is what dependency injection will look like for our project:
 ``` csharp
 selectableCollider.Init(worldToScreenPointDelegate);
 ```
@@ -388,9 +413,9 @@ Each ***user***'s Init method will specify what they need, and the ***managers**
 
 If an ***user*** need multiple managers, or if a *manager* need other managers, we can make a Manager Manager. I usually just call it Game Manager, which sound less ridiculous.
 
-By ordering these `Init` functions, we can specify the exact order we want our classes to be initialized. If you find it difficult to order these functions, that a clear sign that you have circular dependency, and need some re-architecturing. This is different from if you're using Singleton, which will just result in a bunch of `NullReferenceException`.
+By ordering these `Init` function calls, we can specify the exact order we want our classes to be initialized. If you find it difficult to order these call, that a sign you might have circular dependency, and need some re-architecturing. This is different from if you're using Singleton, which will just result in a bunch of `NullReferenceException`, or worse, wrong value without any error.
 
-Oh, and in case you're wondering, what those complex frameworks do basically is to call these Init() methods for you. You'll know when you need them.
+Oh, and in case you're wondering, what those complex frameworks do, basically, is to call these Init() methods for you. You'll know when you need them.
 
 ### Selectables Manager
 With that out of the way, lets implement the only manager we need for this project.
@@ -407,7 +432,7 @@ public class SelectablesManager : MonoBehaviour
 	List<ISelectable>      selectables = new List<ISelectable>();
 	Func<Vector3, Vector2> worldToScreenPointDelegate;
 ```
-We cache the `worldToScreenPointDelegate` so we don't allocate a new one for every selectables.
+We cache the `worldToScreenPointDelegate` so we don't have to allocate a new one for every selectables.
 ``` csharp
 	Vector3    lastCameraPosition;
 	Quaternion lastCameraRotation;
@@ -422,6 +447,9 @@ We cache the `worldToScreenPointDelegate` so we don't allocate a new one for eve
 		foreach (var selectableCollider in selectableColliders)
 		{
 			selectableCollider.Init(worldToScreenPointDelegate);
+```
+We `Init` the selectables from here since this is the only dependency they need.
+``` csharp
 		}
 
 		selectables.AddRange(selectableColliders);
@@ -456,125 +484,69 @@ We cache the `worldToScreenPointDelegate` so we don't allocate a new one for eve
 		}
 	}
 ```
-We check at the end of every frame to see if the camera has moved or rotated in that frame, and invalidate all the selectables. If you have a camera controller, you may want to expose an event from there to notify when the camera actually moved, instead of polling like this.
+We check at the end of every frame to see if the camera has moved or rotated, and invalidate all the selectables. If you have a camera controller, you may want to expose an event from there to notify when the camera actually moved, instead of polling like this.
 ``` csharp
 }
 ```
 </div>
 
-### Finally getting to the 🍖. Lasso selection
-
-At its core, lasso selection is the problem of testing whether a point in a polygon.
-
-First thing I thought of when starting this project, is that it will be difficult to do actual point in polygon test - especially for weirdly shaped ones that have crossing edge like those in the 2 gifs above. I almost tried to tessellate the polygon to triangles to reduce the problem to point in triagles, which is easy.
-
-I was completely wrong.
-
-A quick internet search lead me to this [Wiki page](https://en.wikipedia.org/wiki/Point_in_polygon) and [SO question](https://stackoverflow.com/questions/217578/how-can-i-determine-whether-a-2d-point-is-within-a-polygon), which explained the solution very well. Look at this image:
-
-{{<figure src="/img/unity-lasso-selection/recursive-even-polygon.svg" title="By Melchoir - Own work. The algorithm is described at Wise, Stephen (2002). GIS Basics. CRC Press. pp. 66–67. ISBN 0415246512. That source depicts the algorithm in Figure 4.6 on page 67, which is similar in spirit but does not use color or numerical labels., CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=2974468">}}
-
-If you draw a horizontal ray from left to right, it will start out outside of the polygon. This mean all the point on the line also are outside of the polygon.
-
-If the ray start intersecting the polygon, all the point on the ray to the right of that intersection is now inside the polygon. If it intersect another time, then now the remaining points are outside of the polygon again. So on and so fourth.
-
-To put it in another ways: a point is in a polygon if the horizontal line crossing that point have an *odd* number of intersections with the polygon on either side of the point.
-
-To find the intersections of a line and a polygon is essentially finding the intersection of the line with every line that made up the polygon. Line - line-segment intersection, which is very easy. In our case, it even easier as the line is always perfectly horizontal.
-
-Unfortunately, all of the sites I found did not explain the simplified line-segment, horizon intersection math, so I will attempt to do so here.
-
-
+### Tying it all together
+Now, return to the `UGUILassoSelector` class, lets add reference our new `SelectablesManager`, make sure to add the `[SerializeField]` attribute so we can assign it in the Inspector.
 ``` csharp
-bool IsPointInLasso(Vector2 point)
-{
-	int vCount = vertices.Count;
-	if (vCount < 2) return point == vertices[0];
-
-	bool inside = false;
-	for (int i = 1, j = vCount - 1; i < vCount; j = i++)
-	{
-		var a = vertices[j];
-		var b = vertices[i];
-
-		inside ^= IsBetween(point.y, a.y, b.y) &&
-                point.x < (a.x - b.x) * (point.y - b.y) / (a.y - b.y) + b.x;
-	}
-
-	return inside;
-}
-
-static bool IsBetween(float value, float a, float b)
-{
-	bool aAbovePoint = a > value;
-	bool bAbovePoint = b > value;
-	return aAbovePoint != bAbovePoint;
-}
+// UGUILassoSelector.cs
+[SerializeField] SelectablesManager selectablesManager;
 ```
 
-``` csharp
-public override int GetSelected(IEnumerable<ISelectable> selectables, ref List<ISelectable> result)
-{
-	int selectedCount = 0;
-	foreach (var selectable in selectables)
-	{
-		int selectedVerticesCount = 0;
-		foreach (var vertex in selectable.VerticesScreenSpace)
-		{
-			if (IsPointInLasso(vertex))
-			{
-				selectedVerticesCount++;
-			}
-		}
+Wait a minute! - you said - So what about all the dependency injection things you been ranting about? Aren't we supposed to pass the managers in using an `Init` method?
 
-		if (selectedVerticesCount < selectable.VerticesScreenSpace.Length / 2f) continue;
+Glad you asked! See, this is actually another form of dependency injection. Unity Editor is the dependency injector, and by using the `[SerializeField]` attribute, we're declaring what dependencies are needed.
 
-		selectable.OnSelected();
-		result.Add(selectable);
-		selectedCount++;
-	}
+The problem about this method, first, is that we can only inject a few limited Unity types (and our custom subtypes of them). That mean we will have to inject the whole Selectables Manager, even through we only need some members of the object. It make this class, the `UGUILassoSelector`, tightly coupled with the SelectablesManager. We can't really use one without the other. It make unit testing more difficult, and make the class less portable.
 
-	return selectedCount;
-}
-```
+Another problem is we need to manually assign the SelectablesManager to every `UGUILassoSelector`, which is only 1. But you can see it wouldn't work in case of the Selectables.
 
-### Multi-threading
+The benefit of this approach is the GUI. Say if you're building a multiplayer RTS, you can give your designer theses scripts, and lets them hook up the Managers to the right players, may be changes the selection color for each player or whatever. Basically, now they're responsible for calling the Init() methods instead of you. Putting the L in SOLID amirite 😁👍.
+
+O'right, now we can use the SelectablesManager to get the list of selectables, and give them to the Lasso Selector when we receive the Drag event.
+
+<div class="code-block">
 
 ``` csharp
-readonly ConcurrentBag<ISelectable> selectedBag = new ConcurrentBag<ISelectable>();
+// UGUILassoSelector.cs
+List<ISelectable> selected = new List<ISelectable>();
+```
+We need a place to store the selected objects.
+``` csharp
 
-public override int GetSelected(IEnumerable<ISelectable> selectables, ICollection<ISelectable> result)
+void UnSelectAll()
 {
-	while (selectedBag.TryTake(out _)) { }
-
-	Parallel.ForEach(
-		selectables,
-		selectable =>
-		{
-			int selectedVerticesCount = 0;
-			for (var i = 0; i < selectable.VerticesScreenSpace.Length; i++)
-			{
-				var vertex = selectable.VerticesScreenSpace[i];
-				if (IsPointInLasso(vertex))
-				{
-					selectedVerticesCount++;
-				}
-			}
-
-			if (selectedVerticesCount < selectable.VerticesScreenSpace.Length / 2f) return;
-
-			selectedBag.Add(selectable);
-		}
-	);
-
-	int selectedCount = 0;
-	foreach (var selectable in selectedBag)
+	foreach (var selectable in selected)
 	{
-		selectable.OnSelected();
-		result.Add(selectable);
-		selectedCount++;
+		selectable.OnDeselected();
 	}
 
-	return selectedCount;
+	selected.Clear();
+}
+
+public void OnBeginDrag(PointerEventData eventData)
+{
+	UnSelectAll();
+```
+Deselect everything when we begin dragging.
+``` csharp
+	ExtendLasso(eventData.position);
+}
+
+public void OnDrag(PointerEventData eventData)
+{
+	UnSelectAll();
+```
+Also deselect everything when we are dragging. Because we can create holes in in the lasso. You might want to do some diffing to only invoke the `deselected` event one per drag. Me lazy.
+``` csharp
+	ExtendLasso(eventData.position);
+	lassoSelector.GetSelected(selectablesManager.Selectables, selected);
 }
 ```
+</div>
+
+Of course, nothing is selected yet. Our `GetSelected` method is just `return 0`. But now, we're done with all the set up. In the next post, we will get to the meaty part: the lasso selection algorithm.
