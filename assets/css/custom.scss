@@ -30,7 +30,7 @@ a {
 }
 
 .post-preview {
-	max-height: 15em;
+	max-height: 50em;
 	overflow  : hidden;
 	position  : relative;
 
@@ -45,10 +45,6 @@ a {
 	}
 
 	h2 {
-		display: none;
-	}
-
-	video {
 		display: none;
 	}
 }
