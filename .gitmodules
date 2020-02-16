@@ -3,4 +3,4 @@
 	url = https://github.com/panr/hugo-theme-terminal
 [submodule "themes/noteworthy"]
 	path = themes/noteworthy
-	url = https://github.com/kimcc/hugo-theme-noteworthy.git
+	url = https://github.com/LeLocTai/hugo-theme-noteworthy.git
