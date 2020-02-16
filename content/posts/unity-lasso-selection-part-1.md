@@ -6,7 +6,7 @@ tags = ["Unity", "Programming"]
 videos = ["https://giant.gfycat.com/SparseFormalElkhound.mp4"]
 +++
 
-{{<gfycat SparseFormalElkhound controls muted loop>}}
+{{<gfycat SparseFormalElkhound controls requestautoplay muted loop>}}
 
 ## Introduction
 
