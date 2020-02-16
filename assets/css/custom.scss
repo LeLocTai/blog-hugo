@@ -113,8 +113,8 @@ nav {
 		list-style-position: outside;
 	}
 
-	&>ul,
-	&>ol {
+	ul,
+	ol {
 		margin-left: -1.5em;
 
 		li {
@@ -122,6 +122,7 @@ nav {
 
 			ol,
 			ul {
+				margin-left    : unset;
 				margin-bottom  : .5em;
 				list-style-type: persian;
 			}
