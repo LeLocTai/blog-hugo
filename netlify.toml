@@ -2,21 +2,23 @@
 publish = "public"
 command = "hugo --gc --minify"
 
+# RSS
+[[headers]]
+  for = "/index.xml"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+
 [[redirects]]
   from = "https://tai-blog.netlify.com"
   to = "https://blog.leloctai.com"
   status = 200
   force = true
   
-  [[headers]]
-  for = "/index.xml"
-    [headers.values]
-    Access-Control-Allow-Origin = "*"
-    
 [[redirects]]
-  from = "/*"
-  to = "/index.html#Error404"
-  status = 404 
+  from = "https://preview--tai-blog.netlify.com"
+  to = "https://preview--blog.leloctai.com"
+  status = 200
+  force = true
 
 [context.production.environment]
 HUGO_VERSION = "0.63.1"
