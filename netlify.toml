@@ -21,17 +21,17 @@ command = "hugo --gc --minify"
   force = true
 
 [context.production.environment]
-HUGO_VERSION = "0.63.1"
+HUGO_VERSION = "0.64.1"
 HUGO_ENV = "production"
 
 [context.deploy-preview]
 command = "hugo --gc --minify -D --buildFuture -b $DEPLOY_PRIME_URL"
 
 [context.deploy-preview.environment]
-HUGO_VERSION = "0.63.1"
+HUGO_VERSION = "0.64.1"
 
 [context.branch-deploy]
 command = "hugo --gc --minify -D --buildFuture -b $DEPLOY_PRIME_URL"
 
 [context.branch-deploy.environment]
-HUGO_VERSION = "0.63.1"
+HUGO_VERSION = "0.64.1"

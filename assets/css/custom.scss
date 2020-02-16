@@ -16,6 +16,18 @@ a {
 	}
 }
 
+@media only screen and (min-width: 900px) {
+	.wide-hiden {
+		display: none;
+	}
+}
+
+@media only screen and (max-width: 900px) {
+	.narrow-hiden {
+		display: none;
+	}
+}
+
 .site-title a {
 	color        : blue;
 	font-family  : inherit;
@@ -78,7 +90,9 @@ nav {
 }
 
 nav {
-	overflow: visible;
+	display       : flex;
+	flex-direction: column;
+	overflow      : visible;
 
 	h3 {
 		margin-top   : 1.5em;
@@ -102,6 +116,16 @@ nav {
 	&>ul,
 	&>ol {
 		margin-left: -1.5em;
+
+		li {
+			margin-top: .25em;
+
+			ol,
+			ul {
+				margin-bottom  : .5em;
+				list-style-type: persian;
+			}
+		}
 
 		a {
 			text-decoration: none;
@@ -159,7 +183,7 @@ h3 {
 		max-width: 100%;
 		margin   : .5em auto;
 
-		figcaption h4 {
+		figcaption * {
 			font-size  : .75em;
 			font-weight: normal;
 			color      : gray;
@@ -197,7 +221,7 @@ code {
 .code-block {
 	background: #fafafa;
 
-	p {
+	&>:not(.highlight) {
 		border-radius: 8px 0 0 8px;
 		box-shadow   : -2px 2px 4px rgba(0, 0, 0, .1);
 		background   : white;
@@ -219,12 +243,34 @@ code {
 	}
 }
 
-footer {
+.prev-link {
+	margin-right: 1em;
+}
+
+.next-link {
+	float      : right;
+	margin-left: 1em;
+}
+
+.contact-info {
+	font-size: 1.1em;
+	color    : gray;
+
 	a {
-		color: #ccc;
+		font-size: inherit;
+	}
+}
+
+.footer {
+	height       : unset;
+	margin-top   : auto;
+	margin-bottom: 1em;
+
+	a {
+		color: inherit;
 
 		&:visited {
-			color: #ccc;
+			color: inherit;
 		}
 	}
 
