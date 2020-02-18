@@ -2,6 +2,12 @@
 	font-size: 14px;
 }
 
+@media only screen and (max-width: 900px) {
+	:root {
+		font-size: 15px;
+	}
+}
+
 body {
 	color      : #111;
 	font-family: Bitter, serif;
@@ -210,6 +216,17 @@ pre {
 
 	code {
 		font-size: 0.9em;
+	}
+}
+
+details {
+	padding: 0 .5em;
+	border : solid 2px lightgrey;
+
+	summary {
+		background: lightgrey;
+		margin    : -.5em -.5em .25em;
+		padding   : .5em;
 	}
 }
 
