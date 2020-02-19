@@ -2,29 +2,36 @@
 publish = "public"
 command = "hugo --gc --minify"
 
+# RSS
+[[headers]]
+  for = "/index.xml"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+
 [[redirects]]
   from = "https://tai-blog.netlify.com"
   to = "https://blog.leloctai.com"
   status = 200
   force = true
   
-  [[headers]]
-  for = "/index.xml"
-    [headers.values]
-    Access-Control-Allow-Origin = "*"
+[[redirects]]
+  from = "https://preview--tai-blog.netlify.com"
+  to = "https://preview--blog.leloctai.com"
+  status = 200
+  force = true
 
 [context.production.environment]
-HUGO_VERSION = "0.63.1"
+HUGO_VERSION = "0.64.1"
 HUGO_ENV = "production"
 
 [context.deploy-preview]
-command = "hugo --gc --minify --buildFuture -b $DEPLOY_PRIME_URL"
+command = "hugo --gc --minify -D --buildFuture -b $DEPLOY_PRIME_URL"
 
 [context.deploy-preview.environment]
-HUGO_VERSION = "0.63.1"
+HUGO_VERSION = "0.64.1"
 
 [context.branch-deploy]
-command = "hugo --gc --minify -b $DEPLOY_PRIME_URL"
+command = "hugo --gc --minify -D --buildFuture -b $DEPLOY_PRIME_URL"
 
 [context.branch-deploy.environment]
-HUGO_VERSION = "0.63.1"
+HUGO_VERSION = "0.64.1"
