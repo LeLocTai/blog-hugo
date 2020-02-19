@@ -1,7 +1,7 @@
 +++
 title = 'Unity Lasso Selection - Part 1: Building the foundation'
-date = 2020-02-14
-draft = true
+date = 2020-02-18
+draft = false
 tags = ["Unity", "Programming"]
 videos = ["https://giant.gfycat.com/SparseFormalElkhound.mp4"]
 +++
@@ -46,18 +46,18 @@ void GetSelected(IEnumerable<ISelectable> selectables)
 ```
 
 ### Event and delegate
-C# events let you subscribe to them with *delegates* - function you can pass around. Invoke the event will call all the delegate that has been subcribed to it.
+C# events let you subscribe to them with *delegates* - function you can pass around. Invoke the event will call all the delegate that has been subscribed to it.
 ``` csharp
 public event Action selected;
 
-selected += () => log("selected"); //subcribe with an anonymous function
+selected += () => log("selected"); //subscribe with an anonymous function
 selected += () => log("another one");
 
 selected?.Invoke(); //invoke. the ?. mean only call Invoke() if the event is not null.
-selected(); //invoke. error if null (no subcriber)
+selected(); //invoke. error if null (no subscriber)
 ```
 
-Event can be subcribe to with a delegate, which is a function-as-a-variable. In this case, we uses the premade delegate type `Action`, which is a function that take nothing and return nothing.
+Event can be subtribe to with a delegate, which is a function-as-a-variable. In this case, we uses the pre-made delegate type `Action`, which is a function that take nothing and return nothing.
 
 ## Selector and Selectable
 
@@ -77,7 +77,7 @@ public interface ISelectable
 	IEnumerable<Vector3> Vertices            { get; }
 	IEnumerable<Vector2> VerticesScreenSpace { get; }
 ```
-Since most form of selection are done in screen space, we should cache the screen-space position of the vertices to avoid having to do the conversion everytime, as that would requires a relatively expensive matrix multiplication.
+Since most form of selection are done in screen space, we should cache the screen-space position of the vertices to avoid having to do the conversion every time, as that would requires a relatively expensive matrix multiplication.
 ``` csharp
 	int VerticesSelectedThreshold { get; }
 ```
@@ -85,7 +85,7 @@ We want to be able to select an object, even if our lasso does not fully cover i
 ``` csharp
 	void InvalidateScreenPosition(Func<Vector3, Vector2> worldToScreenPoint);
 ```
-We expect the camera to changes, so we need a way to notify the selectable to update it screenspace position.
+We expect the camera to changes, so we need a way to notify the selectable to update it screen-space position.
 ``` csharp
 	void OnSelected();
 	void OnDeselected();
@@ -257,7 +257,7 @@ Create a Line Renderer GameObject from the Unity Editor, tune it to your liking,
 
 <figure>
 {{<gfycat TemptingMarvelousFairybluebird controls>}}
-<figcaption><p>Besure to turn on the "loop" checkbox of the line renderer. Otherwise you would get a rope, not a lasso</p></figcaption>
+<figcaption><p>Be sure to turn on the "loop" checkbox of the line renderer. Otherwise you would get a rope, not a lasso</p></figcaption>
 </figure>
 
 ## Make Colliders Selectable
@@ -274,7 +274,7 @@ public class SelectableCollider : MonoBehaviour, ISelectable
 
 	public int VerticesSelectedThreshold => vertices.Length / 2;
 ``` 
-I hardcode the amount of selected vertices for the object to be selected to be 50%. You might want to expose this to the UI to make it configurable.
+I hard-coded the amount of selected vertices for the object to be selected to be 50%. You might want to expose this to the UI to make it configurable.
 ``` csharp
 	Vector3[] vertices            = new Vector3[0];
 	Vector2[] verticesScreenSpace = new Vector2[0];
@@ -345,7 +345,7 @@ Lets also implement the `InvalidateScreenPosition` method, defined by the interf
 ```
 </div>
 
-Now you have a script that can be attached to any GameObject with mesh or box colliders, and it would cache a list of screen space postion that can be used for selection. Here how it would look like:
+Now you have a script that can be attached to any GameObject with mesh or box colliders, and it would cache a list of screen space position that can be used for selection. Here how it would look like:
 
 <details>
 <summary>Code for visualizing the vertices</summary>
@@ -364,7 +364,7 @@ void OnGUI()
 ```
 </details>
 
-{{<figure src="/img/unity-lasso-selection/screen-pos-from-colliders.png" title="Green boxes are coliders, black are the vertices we generated">}}
+{{<figure src="/img/unity-lasso-selection/screen-pos-from-colliders.png" title="Green boxes are colliders, black are the vertices we generated">}}
 
 Except it doesn't actually do anything. Yet.
 
@@ -388,12 +388,12 @@ There are a few problems when using these managers:
    - Use Unity Script Execution Order?
 
  - What if a *manager* need others *managers* to initialize?
-   - Awake/Start would not be sufficent.
+   - Awake/Start would not be sufficient.
    - Using Script Execution Order is messy. Logic is spread everywhere, order is not apparent just looking at the code. Difficult to transfer to other projects.
 
 Many tutorial I've seen use the Singleton pattern - basically a static field in each manager class that point to the only instance of that class. 
 
-It solve the first problem - the managers are accessible from anywhere. However, it does not attempt to solve the ordering problems at all. If you ever try to use Singleton for a non trivial project, you will inevitably run into these ordering problems, which often manifest themselve in the form of the non-informative `NullReferenceException`.
+It solve the first problem - the managers are accessible from anywhere. However, it does not attempt to solve the ordering problems at all. If you ever try to use Singleton for a non trivial project, you will inevitably run into these ordering problems, which often manifest themselves in the form of the non-informative `NullReferenceException`.
 
 Furthermore, using Singleton obscure the ordering of initialization. You might create circular dependency, with no clear indication of the situation.
 
@@ -421,13 +421,13 @@ This is what dependency injection will look like for our project:
 selectableCollider.Init(worldToScreenPoint);
 ```
 
-You *inject* the *dependency* by passing it into a method. That's it. Usually the method would be the constructor, but in Unity you can't really use contructors for MonoBehaviour, so we have to make up something else.
+You *inject* the *dependency* by passing it into a method. That's it. Usually the method would be the constructor, but in Unity you can't really use constructors for MonoBehaviour, so we have to make up something else.
 
 Each *user*'s `Init` method will specify what they need in their argument list, and the *managers* will call it with the appropriated dependencies, whenever they're ready. 
 
 If an user need multiple managers, or if a manager need other managers, we can make a Manager Manager. I usually just call it Game Manager, which sound less ridiculous.
 
-By ordering these `Init` function calls, we can specify the exact order we want our classes to be initialized. If you find it difficult to order these calls, that a sign you might need some re-architecturing. This is different from if you're using Singleton, which will just result in a bunch of `NullReferenceException`, or worse, wrong value without any error. 
+By ordering these `Init` function calls, we can specify the exact order we want our classes to be initialized. If you find it difficult to order these calls, that a sign you might need some re-architecture. This is different from if you're using Singleton, which will just result in a bunch of `NullReferenceException`, or worse, wrong value without any error. 
 
 This is the reason I encourage you to never use Singleton (may be except in game jam). The time and brain damage it take to debug missing/incorrect dependency issues is never worth the saved by Singleton. Using Dependency Injection can be very easy.
 
@@ -461,7 +461,7 @@ We cache the `worldToScreenPointDelegate` so we don't have to allocate a new one
 ```
 <details>
 <summary>But Find*() are slow?</summary>
-Not really. They can take an order of magnitude of tens to hundreds of millisecond. Which is a lot if you call them everyframe ( &le; 16.(6)ms), but imperceptible if called once at startup.
+Not really. They can take an order of magnitude of tens to hundreds of millisecond. Which is a lot if you call them every frame ( &le; 16.(6)ms), but imperceptible if called once at startup.
 </details>
 
 ``` csharp
