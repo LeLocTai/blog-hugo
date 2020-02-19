@@ -1,5 +1,11 @@
 :root {
-	font-size: 14px;
+	// font-size: 14px;
+}
+
+@media only screen and (max-width: 900px) {
+	:root {
+		// font-size: 15px;
+	}
 }
 
 body {
@@ -191,6 +197,18 @@ h3 {
 			margin     : 0 1em;
 		}
 	}
+
+	ul,
+	ol {
+		li {
+			margin-bottom: .25em;
+
+			ol,
+			ul {
+				margin: .25em 0;
+			}
+		}
+	}
 }
 
 @media only screen and (min-width: 900px) {
@@ -206,10 +224,11 @@ h3 {
 }
 
 pre {
-	overflow: auto;
+	overflow : auto;
+	font-size: .95em;
 
 	code {
-		font-size: 0.9em;
+		font-size: 1em;
 	}
 }
 
@@ -217,6 +236,22 @@ pre,
 code {
 	font-family: Consolas, monospace;
 	line-height: 1.4;
+}
+
+.katex-display {
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+details {
+	padding: 0 .5em;
+	border : solid 2px lightgrey;
+
+	summary {
+		background: lightgrey;
+		margin    : -.5em -.5em .25em;
+		padding   : .5em;
+	}
 }
 
 .code-block {
