@@ -5,6 +5,7 @@ paginate = 10
 title = "Tai"
 subtitle = ""
 keywords = ""
+googleAnalytics = "UA-83412074-6"
 
 [permalinks]
 	posts = "/:slug"
@@ -52,19 +53,17 @@ keywords = ""
 		style = "monokailight"
 		tabWidth = 3
 
-googleAnalytics = "UA-83412074-6"
-
 [privacy]
-  [privacy.googleAnalytics]
-    anonymizeIP = true
-    useSessionStorage = true
-  [privacy.instagram]
-    simple = true
-  [privacy.twitter]
-    enableDNT = true
-    simple = true
-  [privacy.youtube]
-    privacyEnhanced = true
+	[privacy.googleAnalytics]
+		anonymizeIP = true
+		useSessionStorage = true
+	[privacy.instagram]
+		simple = true
+	[privacy.twitter]
+		enableDNT = true
+		simple = true
+	[privacy.youtube]
+		privacyEnhanced = true
 
 # [params]  
 # 	# dir name of your blog content (default is `content/posts`)
