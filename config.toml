@@ -38,9 +38,9 @@ googleAnalytics = "UA-83412074-6"
 
 [markup]
 	[markup.tableOfContents]
-		endLevel = 3
-		ordered = true
 		startLevel = 2
+		endLevel = 2
+		ordered = true
 		
 	[markup.highlight]
 		codeFences = true
