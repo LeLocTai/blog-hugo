@@ -1,5 +1,5 @@
 +++
-title = 'Unity Lasso Selection - Part 1: Building the foundation'
+title = 'Unity Lasso Selection - Part 1: Making thing Selectable'
 date = 2020-02-18
 draft = false
 tags = ["Unity", "Programming"]
@@ -8,67 +8,35 @@ videos = ["https://giant.gfycat.com/SparseFormalElkhound.mp4"]
 
 {{<gfycat SparseFormalElkhound controls requestautoplay muted loop>}}
 
-## Introduction
+## The boring part
 
-This first post go through the process of designing and building all the infrastructure needed for a lasso selection system in Unity Engine, including some tips for managing dependency between Unity scripts.
+This first post go through the process of designing and building all the infrastructure needed for a selection system in Unity Engine, including some tips for managing dependency between Unity scripts.
 
-While this seem mundane, a good design is extremely important for any project. A well designed system lets you extend them without tearing thing apart. It's easy to test, so you're confident that your new feature doesn't break any things. It's portable, so we can pull it from one project and plug it into another, without having to carry over a bunch of unrelated stuffs, or having to do unnecessary setup work.
+While this seem mundane, a good design is extremely important for any project:
+ - They lets you extend them easily, without tearing thing apart.
+ - It's easy to unit test, so you're confident that your new feature doesn't break any things.
+ - It's portable, so you can pull it from one project and plug it into another, without having to carry over a bunch of duct tape.
 
-While this post can't cover everything you need to know to design a good system, nor is it always practical to choose good design over development speed; I'm a firm believer in the one-step-at-a-time approach to learning. I hope to convince you that dependency injection is easy, and Singleton is almost never worth it.
+If these points is seem unclear to you, they will once you have to deal with a sufficient amount of old code. Skip this post for now.
 
 If you're only interested in the lasso selection algorithm, it'll be in the next part. If you just want something you can use, the Github link is below.
 
-Note that this series is only mean to cover the interesting parts of the project, not a step by step tutorial; so if you just use the code here, it probably will not run. The full codebase is available at https://github.com/LeLocTai/unity-objects-selections.
+Note that this series is only mean to cover the interesting parts of the project, not a step by step tutorial. If you just use the code here, it probably will not run. As such, these posts are not suited for complete beginner. 
+
+The full codebase is available at https://github.com/LeLocTai/unity-objects-selections.
 
  <!--more--> 
 
-## C# Quick Guide
+## The interfaces
 
-This section briefly explain some non-basic C# features that going to be used in this post. If you're familiar with the language, feel free to skip to the next section.
-
-### Interface
-``` csharp
-public interface ISelectable {}
-```
-
-Interfaces let you define a list of features a class have, so many different class can be treated the same way. For example, the `IEnumerable` interface is implemented by both Array and Queue, so you if have a function that take an `IEnumerable` as parameter, you can pass in an Array or a Queue or something else, and the function still treat them the same way.
-
-The convention in C# is to name interfaces with a leading `I`, in case you're confused by the name like me.
-
-``` csharp
-void GetSelected(IEnumerable<ISelectable> selectables)
-{
-	foreach (var selectable in selectables) // Enumerable ≈ Loopable
-	{
-		...
-	}
-}
-```
-
-### Event and delegate
-C# events let you subscribe to them with *delegates* - function you can pass around. Invoke the event will call all the delegate that has been subscribed to it.
-``` csharp
-public event Action selected;
-
-selected += () => log("selected"); //subscribe with an anonymous function
-selected += () => log("another one");
-
-selected?.Invoke(); //invoke. the ?. mean only call Invoke() if the event is not null.
-selected(); //invoke. error if null (no subscriber)
-```
-
-Event can be subtribe to with a delegate, which is a function-as-a-variable. In this case, we uses the pre-made delegate type `Action`, which is a function that take nothing and return nothing.
-
-## Selector and Selectable
-
-Our system need only 2 interfaces:
+Our system need 2 interfaces:
  - **Selectable** that can be selected. I defines the as a list of points/vertices. If a certain percentage of these vertices is selected then the whole thing is selected.
  - **Selector**, which when given a list of selectables, produce a subset of them that is selected.
 
 Using interfaces make it easy to swap out implementation without changing the users. So if we want to create a rectangle selection method, or if we want to make selectables from 2D Sprite, we don't have to touch anything unrelated - just implement the right interface.
 
 ### Selectable
-The actual `Selectable` is a bit more involved:
+
 <div class="code-block">
 
 ``` csharp
@@ -107,20 +75,20 @@ public interface ISelector
 
 Instead of returning a collection, we return the amount of item selected, and add to the provided ICollection instead.
 
-This is to avoid allocating a new collection object every time we need selecting, which is usually every 16.(6)ms. Unity garbage collector cause lag spike when it run, so we want to avoid generating too much garbage.
+This is to avoid allocating a new collection object every time we need selecting, which is usually every 16.(6)ms. The garbage collector will cause lag spike when it run, so we generate as little garbage as possible.
 
 <details>
 <summary>Speaking of allocation...</summary>
 
-Using `IEnumerable` for selectables have an unfortunate consequence: the runtime will always allocate an `IEnumerator` object on the heap when we want to loop through the parameter. Normally, generic collections such as List implement `IEnumerable.GetEnumerator()` with a struct, which will allocate on the stack and not be handled by the garbage collector.
+Using `IEnumerable` for the selectables have an unfortunate consequence: the runtime will always allocate an `IEnumerator` object on the heap when we want to loop through the parameter.
+
+Normally, generic collections such as List implement `IEnumerable.GetEnumerator()` with a struct, which will allocate on the stack and not be handled by the garbage collector.
 
 In this case, I choose to trade the slight sustained performance gain for more flexible code.
 
 </details>
 
-### Lasso Selector
-
-Our Lasso Selector will be an implementation of the Selector interface.
+## Lasso Selector
 
 A Lasso is essentially a polygon. So the lasso selector should store a list of vertices that define it. We can expose these vertices as readonly so later we can have another class that draw the lasso. 
 
@@ -132,7 +100,7 @@ public class LassoSelector : ISelector
 	readonly List<Vector2> vertices = new List<Vector2>();
 	public List<Vector2> Vertices => vertices;
 ```
-Note that both the `readonly` keyword and the lack of setter do not prevent other from modify the `vertices` List, as the variable is just a reference. The proper way to implement readonly List is to make the property private, and create a public method that expose a way to access the List. Me lazy.
+
 ``` csharp
 	public void ExtendLasso(Vector2 newPoint)
 	{
@@ -143,25 +111,27 @@ Note that both the `readonly` keyword and the lack of setter do not prevent othe
 	{
 		Vertices.Clear();
 	}
-```
-A few method to build the lasso.
-``` csharp
-	public int GetSelected(IEnumerable<ISelectable> selectables,
-								  ICollection<ISelectable> result) 
-	{
-		return 0;
-	}
-```
-Finally, implement the interface to get it to compile.
-``` csharp
+	...
 }
 ```
 </div>
 
-## GUI for the Lasso Selector
-### Hooking up the mouse
+<details>
+<summary>readonly but not really</summary>
 
-The Lasso Selector can now hold a list vertices, but we have no way to use it yet. To control the lasso with a mouse, create the following class:
+Both the `readonly` keyword and the lack of setter on the property do not prevent other from modify the `vertices` List, as the variable is just a reference.
+
+The proper way to implement readonly List is to make the property private, and create a public method that expose a way to access the List. Me lazy.
+
+</details>
+
+Notice that the LassoSelector is just a plain C# class - not a MonoBehaviour. It handle the selection logic, but not how it can be created or displayed. This way, you can have any front-end for it. 
+
+## GUI for the Lasso Selector
+
+Let build that front-end, using UGUI.
+
+### Hooking up the mouse
 
 ``` csharp
 public class UGUILassoSelector : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler
@@ -190,17 +160,16 @@ public class UGUILassoSelector : MonoBehaviour, IDragHandler, IEndDragHandler, I
 }
 ```
 
-As you can see, the class implement a lot of interfaces. These interfaces allow it to get callback from Unity UGUI Event System, in this case, for various drag related events. We can use these events to build the lasso, base on the pointer (mouse/touch) position. These events not only detect drag for us, but also handle both mouse and touch
+The interfaces that we're inheriting from are part of UGUI's Event System. They handle both mouse and touch. They're also only triggered when we drag on the RectTransform that the script attached to:
 
-Create an UGUI Image and attach the script to it:
 ![](/img/unity-lasso-selection/ugui-lasso-selector-inspector.png)
 
 Set the Image color to transparent if you don't want it to be visible. But the Image component itself is necessary for our script to receive drag events.
 
 ### Visualize the lasso
-At these point, we can already draw the lasso with the mouse. You can `Debug.Log` out the vertices. However we have no feedback as to how it actually look. To draw the lasso, I choose the easiest way of using a Line Renderer.
+We can now draw the lasso with the mouse. You can `Debug.Log` out the vertices. However we have no feedback as to how it actually look. The easiest way to draw the lasso would be a Line Renderer.
 
-Back to the UGUILassoSelector class, lets declare and initialize the necessary variables. Make sure to include the `[SerializeField]` attribute so we can assign them in the Unity Inspector. As the Line Renderer should match the cursor on screen, we also need a reference to the camera that we're drawing from.
+Back to `UGUILassoSelector`. As the Line Renderer should match the cursor on screen, we also need a reference to the camera that is rendering the screen.
 
 ``` csharp
 // UGUILassoSelector.cs
@@ -260,9 +229,11 @@ Create a Line Renderer GameObject from the Unity Editor, tune it to your liking,
 <figcaption><p>Be sure to turn on the "loop" checkbox of the line renderer. Otherwise you would get a rope, not a lasso</p></figcaption>
 </figure>
 
-## Make Colliders Selectable
+## Make things Selectable
 
-Next, we need some thing to select. There are many way to implement `ISelectable`. We can get the vertices from the renderer mesh, the renderer bounding box, the colliders, or just the center. I opted to take the data from the colliders, which offers reasonable selections accuracy while not creating too many vertices.
+Next, we need some thing to select. You can make anything `ISelectable`, as long as you somehow define it as a list of points. Example are: Renderer mesh, Renderer bounding box, Colliders, or just the center. 
+
+I opted to use the colliders, which offers reasonable selections accuracy while not creating too many vertices.
 
 <div class="code-block">
 
@@ -305,9 +276,9 @@ The selected and deselected events are implemented with C# event. But it can eas
 		boxColliders = GetComponentsInChildren<BoxCollider>();
 
 		int meshColliderVerticesCount = meshCollider ? 
-													meshCollider.sharedMesh.vertexCount : 0;
+												meshCollider.sharedMesh.vertexCount : 0;
 		int boxColliderVerticesCount  = boxColliders.Length > 0 ? 
-													8 * boxColliders.Length : 0;
+												8 * boxColliders.Length : 0;
 
 		int vCount = meshColliderVerticesCount +
                    boxColliderVerticesCount;
@@ -321,9 +292,7 @@ The selected and deselected events are implemented with C# event. But it can eas
 
 		InvalidateScreenPosition(worldToScreenPoint);
 	}
-```
-As you can see, the class support a single mesh collider and multiple box colliders. Following the same layout, adding support for additional collider type is trivial.
-``` csharp
+	
 	void AddMeshColliderVertices(int startOffset)
 	{...}
 	void AddBoxColliderVertices(int startOffset)
@@ -339,7 +308,7 @@ These 2 methods are straight-forward, so they're excerpted for brevity. You can 
 		}
 	}
 ```
-Lets also implement the `InvalidateScreenPosition` method, defined by the interface. But for real this time.
+calculate the new screen-position when requested.
 ``` csharp
 }
 ```
@@ -370,10 +339,10 @@ Except it doesn't actually do anything. Yet.
 
 The `Init` method haven't been called. Usually, in Unity, you do initialization in the Start or Awake method, which will be called by the engine. In there you might use one of the `Find*` methods to find the needed references, the Camera in this case.
 
-So why am I not doing that here? This is a rather important topic, so I want to dedicate a section for it.
+We will not be finding the Camera here. Instead, we will be using dependency injection to acquire only the method we need.
 
-## Side track: Managers, Singleton and dependency management
-
+<details>
+<summary>Rant: Managers, Singleton and dependency management</summary>
 Manager classes is everywhere in game development. They are used to hold stuffs that are used by many objects (let call them *users*), such as game settings, or in our case here, a method to convert position from 3D world space to 2D screen-space. Usually we will need many more *managers*: game manager, players manager, enemies manager, effects manager,...
 
 There are a few problems when using these managers: 
@@ -434,9 +403,11 @@ This is the reason I encourage you to never use Singleton (may be except in game
 Dependency Injection, when combined with interface, also let you to easily swap out any dependency for another. This is especially useful when you want to do unit test.
 
 Oh, and in case you're wondering, what those complex looking frameworks do; they basically call these Init() methods for you. If you ever need them, you'll know.
+</details>
 
 ## Selectables Manager
-With that out of the way, lets implement the only manager we need for this project.
+
+We need something to help us find all the `ISelectables` to feed the `LassoSelector`.
 
 <div class="code-block">
 
@@ -452,15 +423,12 @@ public class SelectablesManager : MonoBehaviour
 ```
 We cache the `worldToScreenPointDelegate` so we don't have to allocate a new one for every selectables.
 ``` csharp
-	Vector3    lastCameraPosition;
-	Quaternion lastCameraRotation;
-
 	void Start()
 	{
 		var selectableColliders = FindObjectsOfType<SelectableCollider>();
 ```
 <details>
-<summary>But Find*() are slow?</summary>
+<summary>Isn't Find*() slow?</summary>
 Not really. They can take an order of magnitude of tens to hundreds of millisecond. Which is a lot if you call them every frame ( &le; 16.(6)ms), but imperceptible if called once at startup.
 </details>
 
@@ -472,34 +440,20 @@ Not really. They can take an order of magnitude of tens to hundreds of milliseco
 		{
 			selectableCollider.Init(worldToScreenPointDelegate);
 ```
-We `Init` the selectables from here since this is the only dependency they need.
+This line is all the Dependency Injection. 25-dollar term for a 5-cent concept.
 ``` csharp
 		}
 
 		selectables.AddRange(selectableColliders);
-
-		lastCameraPosition = selectionCamera.transform.position;
-		lastCameraRotation = selectionCamera.transform.rotation;
 	}
 
 	void LateUpdate()
 	{
-		var cameraTransform = selectionCamera.transform;
-		bool changed = false;
+		bool cameraChanged;
 
-		if (cameraTransform.position != lastCameraPosition)
-		{
-			changed = true;
-			lastCameraPosition = cameraTransform.position;
-		}
+		...
 
-		if (cameraTransform.rotation != lastCameraRotation)
-		{
-			changed = true;
-			lastCameraRotation = cameraTransform.rotation;
-		}
-
-		if (changed)
+		if (cameraChanged)
 		{
 			foreach (var selectable in selectables)
 			{
@@ -516,27 +470,24 @@ We check at the end of every frame to see if the camera has moved or rotated, an
 
 ## Tying it all together
 
-Now we have a SelectablesManager that will provide use with all the selectable in the scene. All we need is pass them to the `UGUILassoSelector`.
-
-Back to the `UGUILassoSelector` class, lets add a reference to our new `SelectablesManager`, make sure to add the `[SerializeField]` attribute so we can assign it in the Inspector.
+Back to `UGUILassoSelector`, lets add a reference to our new `SelectablesManager`, make sure to add the `[SerializeField]` attribute so we can assign it in the Inspector.
 ``` csharp
 // UGUILassoSelector.cs
 [SerializeField] SelectablesManager selectablesManager;
 ```
 
-Wait a minute! - you said - So what about all the dependency injection things you been ranting about? Aren't we supposed to pass in the managers using an `Init` method?
+Wait a minute! - you said - So what about all the dependency injection things you been rambling about? Aren't we supposed to pass in the managers using an `Init` method?
 
-Glad you asked! See, this is actually another form of dependency injection. Unity Editor is the dependency injector, and by using the `[SerializeField]` attribute, we're declaring what dependencies are needed. You've been using DI all this time! Told you DI is easy.
+Glad you asked! See, this is actually dependency injection. Unity Editor is the dependency injector, and by using the `[SerializeField]` attribute, we're declaring what dependencies are needed. You've been using DI all this time!
 
-The problem about this method, first, is that we can only inject a few limited Unity types (and our custom subtypes of them). That mean we will have to inject the whole Selectables Manager, even through we only need some members of the object. It make `UGUILassoSelector` tightly coupled with `SelectablesManager`. We can't use one without the other. It make unit testing more difficult, and make the class less portable.
+There are a few problems with this method:
+ - Can only inject a few limited Unity types: we have to inject the whole Selectables Manager, even through we only need some members of the object. It make `UGUILassoSelector` tightly coupled with `SelectablesManager`. We can't use one without the other.
+ - No control of the exact ordering - you have to manage with a few methods like Start and Awake. In this case, the `UGUILassoSelector` don't need the `SelectablesManager` stuffs until the user try to drag something, which will always be after the Start method is completed.
+ - Need to manually assign the SelectablesManager to every `UGUILassoSelector`, which is only 1 in this case, but you can see it wouldn't work in case of the SelectableColliders.
 
-You also have no control of the exact ordering. But in this case, the `UGUILassoSelector` don't need the `SelectablesManager` stuffs until the user try to drag something, which will always be after the Start method completed.
+The most notable benefit of this approach is the GUI. Say if you're building a multiplayer RTS, you can give your designer theses scripts, and lets them hook up the Managers to the right players, may be changes the selection color for each player or whatever. Now they're responsible for calling the Init() methods instead of you. Putting the S in SOLID amirite 😁👍.
 
-Another problem is we need to manually assign the SelectablesManager to every `UGUILassoSelector`, which is only 1 in this case, but you can see it wouldn't work in case of the Selectables.
-
-The benefit of this approach is the GUI. Say if you're building a multiplayer RTS, you can give your designer theses scripts, and lets them hook up the Managers to the right players, may be changes the selection color for each player or whatever. Now they're responsible for calling the Init() methods instead of you. Putting the S in SOLID amirite 😁👍.
-
-Now that we have the SelectablesManager along with all of its selectables. We'll give this to the Lasso Selector when we receive the Drag event.
+Now that we have a way to retrieve all the selectables. We can give this to the Lasso Selector when we receive the Drag event.
 
 <div class="code-block">
 
@@ -559,9 +510,6 @@ void UnSelectAll()
 public void OnBeginDrag(PointerEventData eventData)
 {
 	UnSelectAll();
-```
-Deselect everything when we begin dragging.
-``` csharp
 	ExtendLasso(eventData.position);
 }
 
@@ -569,7 +517,7 @@ public void OnDrag(PointerEventData eventData)
 {
 	UnSelectAll();
 ```
-Also deselect everything when we are dragging. Because we can create holes in in the lasso. You might want to do some diffing to only invoke the `deselected` event one per drag. Me lazy.
+Deselect everything when we are dragging, as we can create holes in in the lasso. You might want to do some diffing to only invoke the `deselected` event one per drag. Me lazy.
 ``` csharp
 	ExtendLasso(eventData.position);
 	lassoSelector.GetSelected(selectablesManager.Selectables, selected);
@@ -577,5 +525,4 @@ Also deselect everything when we are dragging. Because we can create holes in in
 ```
 </div>
 
-Of course, nothing is selected yet. Our `GetSelected` method is just `return 0`. But now, we're done with all the set up. In the next post, we will get to the meaty part: the lasso selection algorithm.
-
+We're done with all the set up. In the next post, we will get to the meaty part: the lasso selection algorithm.
