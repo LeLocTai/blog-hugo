@@ -172,16 +172,6 @@ h3 {
 	overflow  : hidden;
 	position  : relative;
 
-	&:before {
-		content   : '';
-		position  : absolute;
-		top       : 0;
-		left      : 0;
-		width     : 100%;
-		height    : 100%;
-		background: linear-gradient(to top, $backgroundColor 0, transparent 3rem);
-	}
-
 	h2 {
 		display: none;
 	}
@@ -190,6 +180,15 @@ h3 {
 		line-height  : 1.54;
 		margin-bottom: .5em;
 	}
+}
+
+.post-read-more-link {
+	position  : absolute;
+	bottom    : 0;
+	left      : 0;
+	width     : 100%;
+	height    : 3em;
+	background: linear-gradient(to top, $backgroundColor 0, transparent 100%);
 }
 
 .article-excerpt {
