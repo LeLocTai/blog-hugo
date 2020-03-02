@@ -8,7 +8,7 @@ keywords = ""
 googleAnalytics = "UA-83412074-6"
 
 [permalinks]
-	posts = "/:slug"
+	posts = "/:filename"
 
 [author]
 	name = "Le Loc Tai"
