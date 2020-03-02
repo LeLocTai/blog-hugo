@@ -4,6 +4,8 @@ $linkColorVisited : #ae95b3;
 
 :root {
 	// font-size: 14px;
+
+	scroll-behavior: smooth;
 }
 
 @media only screen and (max-width: 900px) {
@@ -15,9 +17,10 @@ $linkColorVisited : #ae95b3;
 body {
 	color           : #c3c3c3;
 	background-color: $backgroundColor;
-	font-family     : Bitter, serif;
-	font-family     : "Source Sans Pro", "Helvetica Neue", Helvetica, sans-serif;
-	font-size       : 1rem;
+
+	font-family: Bitter, serif;
+	font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, sans-serif;
+	font-size  : 1rem;
 }
 
 a {
@@ -186,6 +189,14 @@ h3 {
 	font-size    : .9rem;
 }
 
+.metadata {
+	p {
+		margin: 0;
+	}
+
+	margin-bottom: 1em;
+}
+
 .content-container {
 
 	img,
@@ -217,6 +228,9 @@ h3 {
 
 @media only screen and (min-width: 900px) {
 	.content-container {
+		display: block;
+		padding: 0;
+
 		max-width  : 36em;
 		max-width  : 75ch;
 		margin-left: calc(240px + 36px + 1em);
