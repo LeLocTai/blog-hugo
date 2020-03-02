@@ -8,7 +8,7 @@ keywords = ""
 googleAnalytics = "UA-83412074-6"
 
 [permalinks]
-	posts = "/:slug"
+	posts = "/:filename"
 
 [author]
 	name = "Le Loc Tai"
@@ -38,19 +38,19 @@ googleAnalytics = "UA-83412074-6"
 
 [markup]
 	[markup.tableOfContents]
-		endLevel = 3
-		ordered = true
 		startLevel = 2
+		endLevel = 2
+		ordered = true
 		
 	[markup.highlight]
 		codeFences = true
-		guessSyntax = false
+		guessSyntax = true
 		hl_Lines = ""
 		lineNoStart = 1
 		lineNos = false
 		lineNumbersInTable = true
 		noClasses = true
-		style = "monokailight"
+		style = "dracula"
 		tabWidth = 3
 
 [privacy]

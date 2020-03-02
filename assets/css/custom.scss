@@ -1,5 +1,11 @@
+$backgroundColor  : #202d33;
+$linkColor        : white;
+$linkColorVisited : #ae95b3;
+
 :root {
 	// font-size: 14px;
+
+	scroll-behavior: smooth;
 }
 
 @media only screen and (max-width: 900px) {
@@ -9,16 +15,19 @@
 }
 
 body {
-	color      : #111;
+	color           : #c3c3c3;
+	background-color: $backgroundColor;
+
 	font-family: Bitter, serif;
+	font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, sans-serif;
 	font-size  : 1rem;
 }
 
 a {
-	color: blue;
+	color: $linkColor;
 
 	&:visited {
-		color: rebeccapurple;
+		color: $linkColorVisited;
 	}
 }
 
@@ -35,16 +44,20 @@ a {
 }
 
 .site-title a {
-	color        : blue;
-	font-family  : inherit;
-	font-weight  : bold;
-	font-size    : 2rem;
-	border-bottom: 2px solid;
+	// color        : blue;
+	font-family     : inherit;
+	font-weight     : bold;
+	font-size       : 2rem;
+	border-bottom   : 2px solid;
 
 	&:visited {
-		color: blue;
+		color: $linkColor;
 	}
+}
 
+h2 a {
+	color      : inherit;
+	text-shadow: none;
 }
 
 .post-preview {
@@ -59,7 +72,7 @@ a {
 		left      : 0;
 		width     : 100%;
 		height    : 100%;
-		background: linear-gradient(to top, white 1rem, transparent 3rem);
+		background: linear-gradient(to top, $backgroundColor 1rem, transparent 3rem);
 	}
 
 	h2 {
@@ -68,18 +81,16 @@ a {
 }
 
 .color-link {
-	color      : blue;
+	color      : inherit;
 	font-family: inherit;
 
 	&:visited {
-		color: blue;
+		color: inherit;
 	}
 }
 
-nav {
-	a {
-		color: cornflowerblue;
-	}
+nav a {
+	color: inherit;
 }
 
 nav {
@@ -137,10 +148,6 @@ nav {
 		a {
 			text-decoration: none;
 
-			&:visited {
-				color: cornflowerblue;
-			}
-
 			&:hover {
 				text-decoration: underline;
 			}
@@ -182,6 +189,18 @@ h3 {
 	font-size    : .9rem;
 }
 
+.metadata {
+	p {
+		margin: 0;
+	}
+
+	margin-bottom: 1em;
+}
+
+table thead {
+	background: none;
+}
+
 .content-container {
 
 	img,
@@ -213,7 +232,11 @@ h3 {
 
 @media only screen and (min-width: 900px) {
 	.content-container {
-		max-width  : 42em;
+		display: block;
+		padding: 0;
+
+		max-width  : 36em;
+		max-width  : 75ch;
 		margin-left: calc(240px + 36px + 1em);
 	}
 }
@@ -223,13 +246,29 @@ h3 {
 	max-width: 100%;
 }
 
+// .highlight {
+// 	border-radius: 8px;
+
+// 	pre {
+// 		padding-left : .25em;
+// 		padding-right: .25em;
+// 	}
+// }
+
 pre {
 	overflow : auto;
 	font-size: .95em;
+	margin   : 0;
 
 	code {
 		font-size: 1em;
 	}
+}
+
+p code {
+	background   : #282a36;
+	padding      : .3em;
+	border-radius: 2px;
 }
 
 pre,
