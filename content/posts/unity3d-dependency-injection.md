@@ -4,13 +4,13 @@ date = 2020-02-27
 draft = false
 tags = ["unity", "programming", "rant"]
 +++
-
 *Unity in this post refers to the game engine, not the Microsoft framework, nor the DWM.*
 
 The title might annoy you, which is exactly what I feel when googled: "unity engine dependency injection". 
 
 Every single link on the 1st page, except the pdf one which I skipped, is either full of straight-up false information about DI, or kind of correct but completely miss the main point.
 
+<!--more--> 
 
 ## Common Misconceptions
 ### Misconception #1: It too complex, I don't need something to auto-connect dependencies for me, Reflection bad,...
