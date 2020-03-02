@@ -1,7 +1,7 @@
 +++
 title = "Unity gamedev: You are wrong about Dependency Injection"
 date = 2020-02-27
-draft = true
+draft = false
 tags = ["unity", "programming", "rant"]
 +++
 
