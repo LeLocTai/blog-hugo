@@ -1,15 +1,14 @@
 +++
 title = 'Unity Lasso Selection - Part 2: Point-in-polygon algorithm explained'
 date = 2020-02-19
-draft = false
+draft = true
 tags = ["Unity", "Programming"]
 videos = ["https://giant.gfycat.com/SparseFormalElkhound.mp4"]
-math = true
 +++
 
 ## Introduction
 
-In the last post, we talked about how to make thing selectable, and a few ways to connect stuff together. This post will explain the interesting part - the lasso selection algorithm. You can find the complete code here: https://github.com/LeLocTai/unity-objects-selections.
+In the last post, we talked about how to make thing selectable. This post will explain the interesting part - the lasso selection algorithm. You can find the complete code here: https://github.com/LeLocTai/unity-objects-selections.
 
 At its core, lasso selection is the problem of testing whether a point in a polygon.
 
@@ -24,79 +23,72 @@ I found this [Wiki page](https://en.wikipedia.org/wiki/Point_in_polygon) and [SO
 
 {{<figure src="/img/unity-lasso-selection/recursive-even-polygon.svg" title="By Melchoir - Own work. The algorithm is described at Wise, Stephen (2002). GIS Basics. CRC Press. pp. 66–67. ISBN 0415246512. That source depicts the algorithm in Figure 4.6 on page 67, which is similar in spirit but does not use color or numerical labels., CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=2974468">}}
 
-If you draw a horizontal ray from left to right, it will start out <span style="color:blue">**outside**</span> of any polygon. This mean all the points on the line also are <span style="color:blue">**outside**</span> of the polygon. If the ray start intersecting the polygon, all the point on the ray to the right of that intersection is now <span style="color:darkred">**inside**</span> the polygon. If it intersect again, now the remaining points are <span style="color:blue">**outside**</span> of the polygon again. So on and so fourth.
+To find if a point is inside a polygon:
+ - Cast a ray from the point to either side.
+ - If the ray hit **odd** number of time, then it is inside the polygon.
 
-To put it in another ways: a point is inside a polygon if the horizontal line crossing that point have an *odd* number of intersections with the polygon on either side of the point.
+But how do we cast the ray? Unity provide a `Physics2D.Raycast` method, but that:
+ - Need Collider2D, which we don't have.
+ - Not thread-safe.
 
-Finding the intersections of a line and a polygon is finding the intersections of the line with every line that made up the polygon. So our initial problem has been reduced to a line &mdash; line-segment intersection problem. In our case, it even easier as the line is always perfectly horizontal.
+We can implement our own, like those answer in that SO thread, which will certainly be faster, as it is specialized, and be thread-safe. However, the code in those answers are practically black magic, thus this post.
 
 ## Check if a point in the lasso
 
-Given a `point`, the first step is to loop through the vertices of the lasso in pair. Each pair of vertices would be a line-segment. Remember to include the segment between the last and the first vertices, otherwise our polygon would not be closed.
+Casting a ray against a polygon is essentially casting a ray again a bunch of line-segments. So let first get that out of the way.
+
+The first step is to loop through the vertices of the lasso in pair. Each pair of vertices would be a line-segment. Remember to include the segment between the last and the first vertices, otherwise our polygon would not be closed.
 
 <div class="code-block">
 
 ``` csharp
+// LassoSelector.cs
+
 bool IsPointInLasso(Vector2 point)
 {
 	int vCount = vertices.Count;
 	if (vertices.Count < 2) return point == vertices[0];
 
 	bool inside = false;
+	// Assigning both indexes at the same time. Unnecessarily clever.
 	for (int i = 1, j = vCount - 1; i < vCount; j = i++)
 	{
 		var a = vertices[j];
 		var b = vertices[i];
 
-		bool intersectLeft = IsBetween(point.y, a.y, b.y) && 
-									IntersectionX(point, a, b) < point.x;
-```
-For the horizontal line crossing the `point` to intersect with the line-segment `ab`, the point y coordinate must be between the y coordinate of the 2 point `a` and `b`. If it does intersect, we check if the intersection is on the left of the point. On the right also work, as the parity of both side will always be the same.
-``` csharp
-		inside ^= intersectLeft;
-```
-The XOR operator `^=` toggle `inside` if `intersectLeft` is true. Since `inside` start as false, after an odd number of toggle, it'll be true. Just some micro optimization.
-``` csharp
+		// Micro optimization: might avoid 1 branch. But mostly look neat.
+		// XOR operator used to toggle the boolean
+		// Starting from false, odd number of toggles will return true
+		inside ^= IntersectLeft(point, a, b);
 	}
+
 	return inside;
+}
+
+static bool IntersectLeft(Vector2 point, Vector2 a, Vector2 b)
+{
+	return IsBetween(point.y, a.y, b.y) &&
+			LineSegmentIntersectionX(point.y, a, b) < point.x;
 }
 
 static bool IsBetween(float value, float a, float b)
 {
 	return a > value != b > value;
 }
+
+static float LineSegmentIntersectionX(float lineY, Vector2 a, Vector2 b)
+{
+	return (a.x - b.x) * (lineY - b.y) / (a.y - b.y) + b.x;
+}
 ```
 </div>
 
-So how do we find the intersection x coordinate?
+The IntersectLeft method cast a ray from `point` to the left, and return true if that ray hit the line-segment formed by `a` and `b`. It first eliminate the case where both `a` and `b` are either above or below the `point`.
+And then check if the intersection is on the left of the `point`.
 
-Let call the point \\(P\\), and the line segment \\(AB\\), and the intersection \\(X\\):
+But how that intersection code work?
 
-![](/img/unity-lasso-selection/line-horizon.png)
 
-We want to find X.x, and since:
-$$X_x = J_x + JX = B_x + JX \tag 1$$
-and we have B.x, what we have to find is JX.
-
-It is clear that the 2 triangle \\(\triangle AKB\\) and \\(\triangle BJX\\) are [similar](https://en.wikipedia.org/wiki/Similarity_(geometry)), so the ratio between the blue lines will be equal to the ratio between orange lines:
-$$
-\frac {JX}{KB} = \frac {JB}{KA}
-\Leftrightarrow
-JX = \frac {KB \times JB}{KA} = \frac {(A_x - B_x) \times (P_y - B_y)} {(A_y - B_y)}
-$$
-
-Plug that in (1), we can now find X.x:
-$$
-X_x = B_x + \frac {(A_x - B_x) \times (P_y - B_y)} {(A_y - B_y)}
-$$
-
-Or, as code:
-``` csharp
-static float IntersectionX(Vector2 point, Vector2 a, Vector2 b)
-{
-	return  b.x + (a.x - b.x) * (point.y - b.y) / (a.y - b.y);
-}
-```
 
 ## Check if a Selectable is selected
 
