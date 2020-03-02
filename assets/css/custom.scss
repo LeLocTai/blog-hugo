@@ -45,10 +45,10 @@ a {
 
 .site-title a {
 	// color        : blue;
-	font-family     : inherit;
-	font-weight     : bold;
-	font-size       : 2rem;
-	border-bottom   : 2px solid;
+	font-family  : inherit;
+	font-weight  : bold;
+	font-size    : 2rem;
+	border-bottom: 2px solid;
 
 	&:visited {
 		color: $linkColor;
@@ -133,6 +133,10 @@ nav {
 			}
 		}
 	}
+
+	#see-also {
+		margin-top: auto;
+	}
 }
 
 h1,
@@ -199,6 +203,10 @@ h3 {
 
 .reading-time {
 	color: gray;
+
+	small {
+		color: dimgray;
+	}
 }
 
 .post-metadata {
@@ -348,9 +356,9 @@ details {
 	}
 }
 
-.footer {
+footer.footer {
 	height       : unset;
-	margin-top   : auto;
+	margin-top   : 4em;
 	margin-bottom: 1em;
 
 	a {
@@ -361,12 +369,14 @@ details {
 		}
 	}
 
+	.tech-info,
+	.tech-info a {
+		font-size  : .75rem;
+		color      : scale-color($color: $linkColor, $lightness: -60%);
+		line-height: 1.4;
+	}
+
 	p {
 		margin: 0;
 	}
-}
-
-.tech-info {
-	font-size: .9rem;
-	color    : scale-color($color: $linkColor, $lightness: -50%);
 }
