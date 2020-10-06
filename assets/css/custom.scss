@@ -18,9 +18,9 @@ body {
 	color           : #c3c3c3;
 	background-color: $backgroundColor;
 
-	font-family: Bitter, serif;
-	font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, sans-serif;
-	font-size  : 1rem;
+	font-family   : apple-system, BlinkMacSystemFont, avenir next, avenir, helvetica neue, helvetica, ubuntu, roboto, noto, segoe ui, arial, sans-serif;
+	text-rendering: optimizeLegibility;
+	font-size     : 1rem;
 }
 
 a {
@@ -255,8 +255,8 @@ table thead {
 		display: block;
 		padding: 0;
 
-		max-width  : 36em;
-		max-width  : 75ch;
+		max-width  : 38em;
+		max-width  : 68ch;
 		margin-left: calc(240px + 36px + 1em);
 	}
 }
