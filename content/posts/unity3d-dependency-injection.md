@@ -6,11 +6,11 @@ tags = ["unity", "programming", "rant"]
 +++
 *Unity in this post refers to the game engine, not the Microsoft framework, nor the DWM.*
 
-The title might annoy you, which is exactly what I feel when googled: "unity engine dependency injection". 
+The title might annoy you, which is exactly what I feel when googled: "unity engine dependency injection".
 
 Every single link on the 1st page, except the pdf one which I skipped, is either full of straight-up false information about DI, or kind of correct but completely miss the main point.
 
-<!--more--> 
+<!--more-->
 
 ## Common Misconceptions
 ### Misconception #1: It too complex, I don't need something to auto-connect dependencies for me, Reflection bad,...
@@ -26,9 +26,9 @@ Because of this confusion, many believe the purpose of DI is to avoid passing de
 
 **> *Dependency Injection has nothing to do with Reflection***. It does not slow your code down. Unless you writing for an ATTiny where extra jumps to subroutine matter. Also, Reflection probably won't slow your game down either, unless you use them every frame. It one of those strangely popular cargo-cult.
 
-### Misconception #2: DI is for unit testing
+### Misconception #2: DI is mostly used if you need unit testing
 
-By using DI, you can swap out dependencies of a class without modifying it. 
+By using DI, you can swap out dependencies of a class without modifying it.
 
 This is crucial when you want to do unit test, and is a big advantage of DI. However, ***being able to swap dependencies is a happy side-effect***, but it not the main point.
 
@@ -78,9 +78,7 @@ Right, ItemManager needs a reference to Players. As Players are spawned at runti
 
 What? Ah, Players also need Inventory to store the items they picked up.You haven’t written the code to pick up items yet, so you think you can do it later. But no, ItemManager wants to do something with them in Awake.
 
-The Inventory needs to reference the inventoryPanel to display what it contains. You have to remember to create one and put it in the right inspector slot
-
-This is a contrived example I made up on the spot; you could have avoided some of these problems by with a better design. However, if you have worked enough with Unity, you probably ran into these `NullReferenceException` a lot.
+The Inventory needs to reference the inventoryPanel to display what it contains. You have to remember to create one and put it in the right inspector slot.
 
 Most of the time, these errors come from objects being created or methods being executed in the wrong order. They’re difficult to track down, as they only show up when the references are used, not when they’re created/assigned. It usually take a lot of time to track down these error, and it requires deep knowledge of the codebase.
 
@@ -122,7 +120,7 @@ As you can see, there is no way for you to create `SomeSelector` without having 
 Not only that, there is no way for you to mess up the ordering. To create a Player, you need to provide it with an Inventory. There is no way to create the Inventory after the Player, so the Player can be sure that they always have an Inventory when they need it.
 
 | What Dependency Injection does, is forcing you to be explicit about your dependencies |
-| ----------------------------------------------------------------------------------- |
+| ------------------------------------------------------------------------------------- |
 
 <br/>
 
@@ -146,7 +144,7 @@ We'll need 2 lines to create and initialize an object. We have to remember to al
 
 You should never have hundreds of dependencies for a class. Instead you should split it up to multiple smaller classes, initialize those smaller class and pass the initialized instance into the big class. This is called Inversion of Control (IoC).
 
-For example, your Player can walk, run, make sounds, attack, pick things up, … But it does not need the reference to everything that is needed for all of these activities. 
+For example, your Player can walk, run, make sounds, attack, pick things up, … But it does not need the reference to everything that is needed for all of these activities.
 
 Instead, you have separated class to handle each activity. For example, `PlayerAnimation`, which is initialized with AnimationClip and whatnot, then pass it to the `Player`. When `PlayerAnimation` needs to talk to others, say `PlayerMovement`, they can do so through `Player`.
 
@@ -156,8 +154,10 @@ A common design would be for `Player` to hold its states, such as walking or run
 
 Most of the time, yes. Remember that by not passing things around, you do not eliminate the need to do so, you only hide it.
 
-Some of the time, Singleton can be a suitable choice. Yes, Singleton is not the root of all evil, nor DI is a silver bullet. As with everything in engineering, there always a trade-off. You can use Singleton is if the class should logically have only one instance, and preferably if everything it exposes is read-only. 
+## When not to use Dependency Injection
 
-One example is in Google ARCore SDK: they use Singleton to provide the AR background, which is read-only, and logically 2 background cannot make sense. You can have 100 phone cameras, 4 phone display, the background might not be a 2D texture but a 3D point cloud, but there just can't be 2 background.
+The biggest disadvantage of DI is how verbose it is, and how much ritual you have to do before anything productive.
 
-In any case, you can use whatever you want. I'm here to help you make informed decisions, not be your mom.
+In this regard, I see a lot of similarity between the DI - Singleton fight and the Dynamic - Static typing one.
+
+If you expect your dependency to be minimal, or if you're in the exploratory phase of a project, Singleton is a great way to let you experiment with primary logic. What importance is that you're aware of their shortcoming, and possible solutions.
