@@ -12,11 +12,16 @@ googleAnalytics = "UA-83412074-6"
 
 [author]
 	name = "Le Loc Tai"
-	
+
 [[menu.main]]
 	identifier = "main-site"
 	name = "Main site"
 	url = "https://leloctai.com"
+
+[params]
+	email="mailto:contact@leloctai.com"
+	twitter="https://twitter.com/LeLocTai"
+	reddit="https://www.reddit.com/user/leloctai/?sort=top"
 
 [related]
 	threshold = 80
@@ -32,7 +37,6 @@ googleAnalytics = "UA-83412074-6"
 	name = "date"
 	weight = 10
 
-
 [markup.goldmark.renderer]
 	unsafe = true
 
@@ -41,7 +45,7 @@ googleAnalytics = "UA-83412074-6"
 		startLevel = 2
 		endLevel = 2
 		ordered = true
-		
+
 	[markup.highlight]
 		codeFences = true
 		guessSyntax = true
@@ -64,26 +68,3 @@ googleAnalytics = "UA-83412074-6"
 		simple = true
 	[privacy.youtube]
 		privacyEnhanced = true
-
-# [params]  
-# 	# dir name of your blog content (default is `content/posts`)
-# 	contentTypeName = "posts" 
-# 	# ["orange", "blue", "red", "green", "pink"]
-# 	themeColor = "blue"
-# 	# if you set this to 0, only submenu trigger will be visible
-# 	showMenuItems = 5
-# 	showLanguageSelector = false
-# 	fullWidthTheme = false
-# 	centerTheme = true
-
-# 	# set a custom favicon (default is a `themeColor` square)
-# 	# favicon = "favicon.ico"
-
-# 	# set all headings to their default size (depending on browser settings)
-# 	# it's set to `true` by default
-# 	oneHeadingSize = false
-
-# [params.logo]
-# 	logoText = "Tai's Blog"
-# 	logoHomeLink = "/"
-
