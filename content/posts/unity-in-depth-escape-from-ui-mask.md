@@ -1,9 +1,14 @@
-+++
-title = 'Unity In Depth: Escape from UI Mask'
-date = 2020-10-07
-draft = false
-tags = ["unity", "programming", "graphic"]
-+++
+---
+date: "2020-10-08T00:00:00+07:00"
+draft: true
+showtoc: true
+tags:
+- unity
+- programming
+- graphic
+title: 'Unity In Depth: Escape from UI Mask'
+tocopen: true
+---
 
 This will probably be useful to like 7 people, max; but it was useful to me, so I'm writing about it. In the process, I also explain how the uGUI Masking system work, and why Unity decided not to support soft Mask.
 
@@ -26,7 +31,7 @@ I mean, obviously it is using stencil buffer, but how exactly? How does all the 
 
 Thankfully, Unity [open-sourced](https://github.com/Unity-Technologies/uGUI) their current UI system (sometime called uGUI).
 
-## Source code adventure
+https://forum.unity.com/threads/ui-mask-masking-layer-limit.283181/
 
 ### A guided scary ride
 This is the part that we're interest in, simplified. Feel free to just skim through it.
@@ -166,9 +171,9 @@ Imagine writing and reading 8 screen-sized textures in the pixel shader, aahh...
 
 
 
-## The Escape
+## Escape
 
-With this fresh knowledge, escaping from the grasp of the parent is obvious: just remove the left-most 1 of the `stencilId`. In fact, it is right there in `Mask.GetModifiedMaterial`. If you're ever looked at `CanvasRenderer` doc and wonder what those `PopMaterial` business was about, this is it. These pop material undo the stencil written by the Masks, so uncles and aunts Mask can't affect their nieces and nephews.
+With this fresh knowledge, the escape plan is obvious: just remove the left-most 1 of the `stencilId`. In fact, it is right there in `Mask.GetModifiedMaterial`. If you're ever looked at `CanvasRenderer` doc and wonder what those `PopMaterial` business was about, this is it. These pop material undo the stencil written by the Masks, so uncles and aunts Mask can't affect their nieces and nephews.
 
 However, you can't just call `GetPopMaterial` and use it, however. These material have ColorWriteMask set to 0, which mean they only write to the stencil buffer. To render something for the human eye, you'll have to build the material with the proper `stencilId` yourself.
 
@@ -202,5 +207,7 @@ public Material GetModifiedMaterial(Material baseMaterial)
 }
 ```
 
-### Tip
-Whenever you find yourself generating `Material` from script, you must make sure to `Destroy` them. These object, among a few others, are just pointer to native object: they can't be garbage collected by the CLR. I have to thanks a very kind customer of mine, whom reported a memory leak in [Translucent Image](https://leloctai.com/asset/translucentimage/), which led me to this discovery.
+#### A little performance tip
+Whenever you find yourself generating `Material` from script, you must make sure to `Destroy` them. These object, among a few others, are just pointer to native object: they can't be garbage collected by the CLR. I have to thanks a very kind customer of mine, whom reported a memory leak in [Translucent Image](https://leloctai.com/asset/translucentimage/), which led me to this discovery. It would be nice if Unity on Material have a line about this.
+
+That's it for today. If you see anything wrong, yell at me on {{<contact "Reddit">}} or  {{<contact "Twitter">}}.

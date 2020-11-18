@@ -1,9 +1,12 @@
-+++
-title = "Rant about Dependency Injection and Unity"
-date = 2020-02-27
-draft = false
-tags = ["unity", "programming", "rant"]
-+++
+---
+date: "2020-02-27T00:00:00+07:00"
+draft: false
+tags:
+- unity
+- programming
+- rant
+title: Rant about Dependency Injection and Unity
+---
 *Unity in this post refers to the game engine, not the Microsoft framework, nor the DWM.*
 
 The first page of google for the query: "unity engine dependency injection" tickle me so much I have to write this up to rant about it.

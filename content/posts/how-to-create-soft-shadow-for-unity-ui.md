@@ -1,9 +1,11 @@
-+++
-title = "How to create soft shadow for Unity ui"
-date = 2020-10-05
-draft = true
-tags = ["unity", "programming"]
-+++
+---
+date: "2020-10-05T00:00:00+07:00"
+draft: true
+tags:
+- unity
+- programming
+title: How to create soft shadow for Unity ui
+---
 
 Unity only provide hard UI shadow pro out-of-the-box. We can manually create soft shadow in an image editor and place it into our hierarchy with an Image, but this is very tedious. Wouldn't it be nice if this automatically done within Unity? Even better, can we generate soft shadows at runtime, so no baking is required, and so we can animate them however we like?
 
