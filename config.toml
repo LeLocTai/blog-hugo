@@ -1,6 +1,7 @@
 languageCode = "en-us"
 copyright = "All rights reserved."
-theme = "noteworthy"
+# theme = "noteworthy"
+theme= "hugo-PaperMod"
 paginate = 10
 title = "Tai's Blog"
 subtitle = ""
@@ -13,15 +14,79 @@ googleAnalytics = "UA-83412074-6"
 [author]
 	name = "Le Loc Tai"
 
-[[menu.main]]
-	identifier = "main-site"
-	name = "Main site"
-	url = "https://leloctai.com"
+[menu]
+	[[menu.main]]
+		identifier = "main site"
+		name = "Main site"
+		url = "https://leloctai.com"
+
+	[[menu.main]]
+		identifier = "archives"
+		name = "Archives"
+		url = "/archives"
 
 [params]
-	email="mailto:contact@leloctai.com"
-	twitter="https://twitter.com/LeLocTai"
-	reddit="https://www.reddit.com/user/leloctai/?sort=top"
+	env = "production"
+	# title = "ExampleSite"
+	# description = "ExampleSite description"
+	# author = "Me"
+	# images = "<link or path of image for opengraph, twitter-cards>"
+	ShowReadingTime = true
+	ShowShareButtons = true
+	comments = false
+	defaultTheme = "auto"
+	disableThemeToggle = false
+	disableSpecial1stPost = true
+
+	# [params.assets]
+	# 	favicon = "<link / abs url>"
+	# 	favicon16x16 = "<link / abs url>"
+	# 	favicon32x32 = "<link / abs url>"
+	# 	apple_touch_icon = "<link / abs url>"
+	# 	safari_pinned_tab = "<link / abs url>"
+
+	# [params.label]
+		# text = "Home"
+		# icon = "/apple-touch-icon.png"
+		# iconHeight = 35
+
+	[params.profileMode]
+		enabled = false
+		# title = "ExampleSite"
+
+		# [[params.profileMode.buttons]]
+		# 	name = "Posts"
+		# 	url = "posts"
+
+		# [[params.profileMode.buttons]]
+		# 	name = "Tags"
+		# 	url = "tags"
+
+	# [params.homeInfoParams]
+	# 	Title = "Hi there 👋"
+	# 	Content = "Welcome to my blog"
+
+	[[params.socialIcons]]
+		name = "twitter"
+		url = "https://twitter.com/"
+
+	[[params.socialIcons]]
+		name = "stackoverflow"
+		url = "https://stackoverflow.com"
+
+	[[params.socialIcons]]
+		name = "github"
+		url = "https://github.com/"
+
+	# [params.analytics.google]
+	# 	SiteVerificationTag = "XYZabc"
+
+
+# noteworthy
+# [params]
+# 	email="mailto:contact@leloctai.com"
+# 	twitter="https://twitter.com/LeLocTai"
+# 	reddit="https://www.reddit.com/user/leloctai/?sort=top"
 
 [related]
 	threshold = 80
