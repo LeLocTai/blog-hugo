@@ -1,3 +1,7 @@
+:root {
+	--gap: 10px;
+}
+
 .post-content video {
 	border-radius: 4px;
 	max-width    : 100%;
@@ -5,4 +9,9 @@
 
 .post-content img {
 	margin: auto
+}
+
+.post-content code {
+
+	font-family: Consolas, Courier New, Courier, monospace;
 }
