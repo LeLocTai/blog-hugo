@@ -1,0 +1,119 @@
+languageCode: 'en-us'
+copyright: 'All rights reserved.'
+# theme : "noteworthy"
+theme: 'hugo-PaperMod'
+paginate: 10
+title: "Tai's Blog"
+subtitle: ''
+keywords: ''
+googleAnalytics: 'UA-83412074-6'
+
+permalinks:
+  posts: '/:filename'
+
+author:
+  name: 'Le Loc Tai'
+
+menu:
+  main:
+    - identifier: 'main site'
+      name: 'Main site'
+      url: 'https://leloctai.com'
+    - identifier: 'archives'
+      name: 'Archives'
+      url: '/archives'
+
+params:
+  env: 'production'
+  # title : "ExampleSite"
+  # description : "ExampleSite description"
+  # author : "Me"
+  # images : "<link or path of image for opengraph, twitter-cards>"
+  ShowReadingTime: true
+  ShowShareButtons: true
+  comments: false
+  defaultTheme: 'auto'
+  disableThemeToggle: false
+  disableSpecial1stPost: true
+
+  # assets:
+  #   favicon: '<link / abs url>'
+  #   favicon16x16: '<link / abs url>'
+  #   favicon32x32: '<link / abs url>'
+  #   apple_touch_icon: '<link / abs url>'
+  #   safari_pinned_tab: '<link / abs url>'
+
+  # label:
+  #   text : "Home"
+  #   icon : "/apple-touch-icon.png"
+  #   iconHeight : 35
+
+  profileMode:
+    enabled: false
+    title: 'ExampleSite'
+    buttons:
+      - name: 'Posts'
+        url: 'posts'
+      - name: 'Tags'
+        url: 'tags'
+
+  # homeInfoParams:
+  #   Title : "Hi there 👋"
+  #   Content : "Welcome to my blog"
+
+  socialIcons:
+    - name: 'twitter'
+      url: 'https://twitter.com/'
+    - name: 'stackoverflow'
+      url: 'https://stackoverflow.com'
+    - name: 'github'
+      url: 'https://github.com/'
+
+# noteworthy
+# params:
+#  email:"mailto:contact@leloctai.com"
+#  twitter:"https://twitter.com/LeLocTai"
+#  reddit:"https://www.reddit.com/user/leloctai/?sort:top"
+
+related:
+  threshold: 80
+  includeNewer: true
+  toLower: true
+  indices:
+    - name: 'keywords'
+      weight: 100
+    - name: 'tags'
+      weight: 80
+    - name: 'date'
+      weight: 10
+
+markup:
+  tableOfContents:
+    startLevel: 2
+    endLevel: 2
+    ordered: true
+  highlight:
+    codeFences: true
+    guessSyntax: true
+    hl_Lines: ''
+    lineNoStart: 1
+    lineNos: false
+    lineNumbersInTable: true
+    noClasses: true
+    style: 'dracula'
+    tabWidth: 3
+  goldmark:
+    renderer:
+      unsafe: true
+
+privacy:
+  googleAnalytics:
+    anonymizeIP: true
+    useSessionStorage: true
+  instagram:
+    simple: true
+  twitter:
+    enableDNT: true
+    simple: true
+  youtube:
+    privacyEnhanced: true
