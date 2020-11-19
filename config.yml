@@ -1,5 +1,4 @@
 languageCode: 'en-us'
-copyright: 'All rights reserved.'
 # theme : "noteworthy"
 theme: 'hugo-PaperMod'
 paginate: 10
