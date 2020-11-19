@@ -1,10 +1,13 @@
-+++
-title = 'Unity Lasso Selection - Part 1: Making thing Selectable'
-date = 2020-02-18
-draft = true
-tags = ["Unity", "Programming"]
-videos = ["https://giant.gfycat.com/SparseFormalElkhound.mp4"]
-+++
+---
+date: "2020-02-18T00:00:00+07:00"
+draft: true
+tags:
+- Unity
+- Programming
+title: 'Unity Lasso Selection - Part 1: Making thing Selectable'
+videos:
+- https://giant.gfycat.com/SparseFormalElkhound.mp4
+---
 
 {{<gfycat SparseFormalElkhound controls requestautoplay muted loop>}}
 

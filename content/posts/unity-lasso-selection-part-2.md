@@ -1,10 +1,13 @@
-+++
-title = 'Unity Lasso Selection - Part 2: Point-in-polygon algorithm explained'
-date = 2020-02-19
-draft = true
-tags = ["Unity", "Programming"]
-videos = ["https://giant.gfycat.com/SparseFormalElkhound.mp4"]
-+++
+---
+date: "2020-02-19T00:00:00+07:00"
+draft: true
+tags:
+- Unity
+- Programming
+title: 'Unity Lasso Selection - Part 2: Point-in-polygon algorithm explained'
+videos:
+- https://giant.gfycat.com/SparseFormalElkhound.mp4
+---
 
 ## Introduction
 

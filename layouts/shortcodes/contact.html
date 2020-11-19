@@ -1,0 +1,4 @@
+{{- $name := .Get 0 -}}
+{{- $url := $.Site.Params.Get $name -}}
+
+<a rel="noopener" target="_blank" href="{{- $url -}}">{{- $name -}}</a>

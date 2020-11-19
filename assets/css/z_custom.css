@@ -1,0 +1,52 @@
+:root {
+	--gap: 16px;
+}
+
+body {
+	font-size  : 16px;
+	line-height: 1.5;
+}
+
+.post-content video {
+	border-radius: var(--radius);
+	max-width    : 100%;
+}
+
+.post-content img {
+	margin: auto
+}
+
+.post-content .highlight,
+.post-content pre {
+	tab-size: 4;
+}
+
+.post-content code {
+	font-family: monospace;
+	font-size  : 14px;
+}
+
+.post-content pre code {
+	border-radius: var(--radius);
+	padding      : var(--gap);
+}
+
+.share-buttons {
+	border : none;
+	padding: 0;
+}
+
+.share-buttons span {
+	line-height: 1.8em;
+}
+
+.share-buttons a {
+	opacity            : .75;
+	margin-top         : 0;
+	margin-inline-start: .5em;
+	margin-inline-end  : 0 !important;
+}
+
+footer a {
+	border: none !important;
+}
