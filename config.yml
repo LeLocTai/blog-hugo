@@ -92,14 +92,16 @@ markup:
     endLevel: 2
     ordered: true
   highlight:
-    codeFences: true
+    anchorLineNos: false
+    codeFences: false
     guessSyntax: true
     hl_Lines: ''
+    lineAnchors: ''
     lineNoStart: 1
     lineNos: false
     lineNumbersInTable: true
     noClasses: true
-    style: 'dracula'
+    style: vs
     tabWidth: 3
   goldmark:
     renderer:
