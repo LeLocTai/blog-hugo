@@ -4,4 +4,3 @@
 [submodule "themes/hugo-PaperMod"]
 	path = themes/hugo-PaperMod
 	url = https://github.com/LeLocTai/hugo-PaperMod.git
-	branch = custom
