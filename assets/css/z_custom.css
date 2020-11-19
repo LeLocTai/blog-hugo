@@ -30,3 +30,23 @@ body {
 	border-radius: var(--radius);
 	padding      : var(--gap);
 }
+
+.share-buttons {
+	border : none;
+	padding: 0;
+}
+
+.share-buttons span {
+	line-height: 1.8em;
+}
+
+.share-buttons a {
+	opacity            : .75;
+	margin-top         : 0;
+	margin-inline-start: .5em;
+	margin-inline-end  : 0 !important;
+}
+
+footer a {
+	border: none !important;
+}
