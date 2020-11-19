@@ -30,17 +30,3 @@ body {
 	border-radius: var(--radius);
 	padding      : var(--gap);
 }
-
-::-webkit-scrollbar {
-	width : initial;
-	height: initial;
-}
-
-::-webkit-scrollbar-thumb {
-	background   : initial;
-	border-radius: initial;
-}
-
-::-webkit-scrollbar-track {
-	background: initial;
-}
