@@ -68,12 +68,6 @@ params:
     - name: 'reddit'
       url: 'https://www.reddit.com/user/leloctai/?sort=top'
 
-# noteworthy
-# params:
-#  email:"mailto:contact@leloctai.com"
-#  twitter:"https://twitter.com/LeLocTai"
-#  reddit:"https://www.reddit.com/user/leloctai/?sort:top"
-
 related:
   threshold: 80
   includeNewer: true
